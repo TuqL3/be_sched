@@ -10,5 +10,5 @@ type UserServiceInterface interface {
 	FindUserByUsername(username string) (*models.User, error)
 	UpdateUser(userId int, dto user.UserUpdateDto) (*models.User, error)
 	DeleteUser(userId int) error
-	GetAllUsers() ([]*models.User, error)
+	GetAllUsers(fullName string) ([]*models.User, error)
 }

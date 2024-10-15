@@ -209,7 +209,8 @@ func (u *UserController) DeleteUser(c *gin.Context) {
 }
 
 func (u *UserController) GetAllUsers(c *gin.Context) {
-	users, err := u.userService.GetAllUsers()
+	fullName := c.Query("full_name")
+	users, err := u.userService.GetAllUsers(fullName)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

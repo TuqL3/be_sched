@@ -11,8 +11,8 @@ type UserService struct {
 	userRepository Repository.UserRepositoryInterface
 }
 
-func (u *UserService) GetAllUsers() ([]*models.User, error) {
-	return u.userRepository.GetAllUsers()
+func (u *UserService) GetAllUsers(fullName string) ([]*models.User, error) {
+	return u.userRepository.GetAllUsers(fullName)
 }
 
 func (u *UserService) DeleteUser(userId int) error {
