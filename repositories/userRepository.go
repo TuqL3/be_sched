@@ -14,8 +14,12 @@ type UserRepository struct {
 	DB *gorm.DB
 }
 
-func (u *UserRepository) GetAllUsers() ([]*models.User, error) {
+func (u *UserRepository) GetAllUsers(fullName string) ([]*models.User, error) {
 	var users []*models.User
+	query := u.DB.Model(&models.User{})
+	if fullName != "" {
+		query = query.Where("full_name LIKE ?", "%"+fullName+"%")
+	}
 	if err := u.DB.Find(&users).Error; err != nil {
 		return nil, err
 	}

@@ -19,7 +19,6 @@ type Equipment struct {
 	RoomID        uint            `json:"room_id" gorm:"not null"`
 	Room          Room            `json:"room" gorm:"foreignKey:RoomID"`
 	Status        EquipmentStatus `json:"status" gorm:"type:equipment_status;not null"`
-	Qty           int             `json:"qty" gorm:"not null"`
 	CreatedAt     time.Time       `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt     time.Time       `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt     gorm.DeletedAt  `json:"deleted_at" gorm:"index"`

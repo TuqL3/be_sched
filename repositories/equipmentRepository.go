@@ -20,7 +20,6 @@ func (e *EquipmentRepository) CreateEquipment(createEquipmentDto *equipment.Crea
 
 	m := &models.Equipment{
 		EquipmentName: createEquipmentDto.EquipmentName,
-		Qty:           createEquipmentDto.Qty,
 		RoomID:        createEquipmentDto.RoomID,
 		Status:        models.EquipmentStatus(createEquipmentDto.Status),
 	}
@@ -36,7 +35,6 @@ func (e *EquipmentRepository) UpdateEquipment(equipmentId int, dto equipment.Upd
 		"equipment_name": dto.EquipmentName,
 		"room_id":        dto.RoomID,
 		"status":         dto.Status,
-		"qty":            dto.Qty,
 	}
 
 	if err := e.DB.Table("equipment").Where("id = ?", equipmentId).Updates(updates).Error; err != nil {

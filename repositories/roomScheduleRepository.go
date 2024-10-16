@@ -24,6 +24,7 @@ func (r *RoomScheduleRepository) CreateRoomSchedule(createRoomScheduleDto *roomS
 		StartTime: createRoomScheduleDto.StartTime,
 		EndTime:   createRoomScheduleDto.EndTime,
 		Status:    models.ScheduleStatus(createRoomScheduleDto.Status),
+		Title:     createRoomScheduleDto.Title,
 	}
 	return m, nil
 }

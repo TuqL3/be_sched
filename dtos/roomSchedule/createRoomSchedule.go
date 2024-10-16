@@ -11,6 +11,7 @@ type CreateRoomScheduleDto struct {
 	StartTime time.Time `json:"start_time" gorm:"not null"`
 	EndTime   time.Time `json:"end_time" gorm:"not null"`
 	Status    string    `json:"status" gorm:"not null"`
+	Title     string    `json:"title" gorm:"not null"`
 }
 
 func (u *CreateRoomScheduleDto) Validate() error {
