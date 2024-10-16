@@ -15,5 +15,6 @@ func RoomRoute(route *gin.Engine, controller *controllers.RoomController) {
 		roomRouteMiddleware.POST("/create", controller.CreateRoom)
 		roomRouteMiddleware.DELETE("/delete/:roomId", controller.DeleteRoom)
 		roomRouteMiddleware.PUT("/update/:roomId", controller.UpdateRoom)
+		roomRouteMiddleware.GET("/", controller.GetAllRoom)
 	}
 }
