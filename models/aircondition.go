@@ -17,5 +17,5 @@ type AirCondition struct {
 }
 
 func (c *AirCondition) TableName() string {
-	return "aircondition"
+	return "airCondition"
 }

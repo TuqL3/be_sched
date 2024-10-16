@@ -1,13 +1,13 @@
 package Repository
 
 import (
-	"server/dtos/aircondition"
+	"server/dtos/airCondition"
 	"server/models"
 )
 
 type AirConditionRepositoryInterface interface {
-	CreateAirCondition(createAirConditionDto *aircondition.CreateAirConditionDto) (*models.AirCondition, error)
-	UpdateAirCondition(airConditionId int, dto aircondition.UpdateAirConditionDto) (*models.AirCondition, error)
+	CreateAirCondition(createAirConditionDto *airCondition.CreateAirConditionDto) (*models.AirCondition, error)
+	UpdateAirCondition(airConditionId int, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error)
 	DeleteAirCondition(airConditionId int) error
 	GetAllAirConditions() ([]*models.AirCondition, error)
 }

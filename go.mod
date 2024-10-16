@@ -3,6 +3,17 @@ module server
 go 1.22.6
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gin-contrib/cors v1.7.2
+	github.com/gin-gonic/gin v1.10.0
+	github.com/go-playground/validator/v10 v10.22.1
+	github.com/joho/godotenv v1.5.1
+	golang.org/x/crypto v0.27.0
+	gorm.io/driver/postgres v1.5.9
+	gorm.io/gorm v1.25.12
+)
+
+require (
 	github.com/bytedance/sonic v1.12.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect

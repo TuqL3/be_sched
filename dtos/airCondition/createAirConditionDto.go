@@ -1,4 +1,4 @@
-package aircondition
+package airCondition
 
 import "github.com/go-playground/validator/v10"
 

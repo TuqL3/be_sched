@@ -18,7 +18,7 @@ func NewAirConditionController(airConditionService Service.AirConditionServiceIn
 }
 
 func (e *AirConditionController) CreateAirCondition(c *gin.Context) {
-	var airConditionCreateDto aircondition.CreateAirConditionDto
+	var airConditionCreateDto airCondition.CreateAirConditionDto
 	if err := c.ShouldBind(&airConditionCreateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -85,7 +85,7 @@ func (e *AirConditionController) DeleteAirCondition(c *gin.Context) {
 	return
 }
 func (e *AirConditionController) UpdateAirCondition(c *gin.Context) {
-	var airConditionUpdateDto aircondition.UpdateAirConditionDto
+	var airConditionUpdateDto airCondition.UpdateAirConditionDto
 	id, err := strconv.Atoi(c.Param("airConditionId"))
 
 	if err := c.ShouldBind(&airConditionUpdateDto); err != nil {

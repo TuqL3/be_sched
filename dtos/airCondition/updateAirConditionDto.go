@@ -1,4 +1,4 @@
-package aircondition
+package airCondition
 
 type UpdateAirConditionDto struct {
 	CreateAirConditionDto

@@ -44,11 +44,26 @@ func main() {
 	roomScheduleService := services.NewRoomSheduleService(roomScheduleRepository)
 	roomScheduleController := controllers.NewRoomScheduleController(roomScheduleService)
 
+	computerRepository := repositories.NewComputerRepository(config.DB)
+	computerService := services.NewComputerService(computerRepository)
+	computerController := controllers.NewComputerController(computerService)
+
+	airConditionRepository := repositories.NewAirConditionRepository(config.DB)
+	airConditionService := services.NewAirConditionService(airConditionRepository)
+	airConditionController := controllers.NewAirConditionController(airConditionService)
+
+	tAndChRepository := repositories.NewTAndChRepository(config.DB)
+	tAndChService := services.NewTAndChService(tAndChRepository)
+	tAndChController := controllers.NewTAndChController(tAndChService)
+
 	routes.UserRoute(router, userController)
 	routes.RoomRoute(router, roomController)
 	routes.EquipmentRoute(router, equipmentController)
 	routes.ReportRoute(router, reportController)
 	routes.RoomScheduleRoute(router, roomScheduleController)
+	routes.ComputerRoute(router, computerController)
+	routes.AirConditionRoute(router, airConditionController)
+	routes.TAndChtRoute(router, tAndChController)
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal("failed run app: ", err)

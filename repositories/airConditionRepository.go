@@ -3,7 +3,7 @@ package repositories
 import (
 	"errors"
 	"gorm.io/gorm"
-	"server/dtos/aircondition"
+	"server/dtos/airCondition"
 	"server/interface/Repository"
 	"server/models"
 	"time"
@@ -13,8 +13,8 @@ type AirConditionRepository struct {
 	DB *gorm.DB
 }
 
-func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *aircondition.CreateAirConditionDto) (*models.AirCondition, error) {
-	if err := a.DB.Table("aircondition").Create(createAirConditionDto).Error; err != nil {
+func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airCondition.CreateAirConditionDto) (*models.AirCondition, error) {
+	if err := a.DB.Table("airCondition").Create(createAirConditionDto).Error; err != nil {
 		return nil, err
 	}
 
@@ -26,9 +26,9 @@ func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airco
 	return m, nil
 }
 
-func (a *AirConditionRepository) UpdateAirCondition(airConditionId int, dto aircondition.UpdateAirConditionDto) (*models.AirCondition, error) {
+func (a *AirConditionRepository) UpdateAirCondition(airConditionId int, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error) {
 	var existingAirCondition models.AirCondition
-	if err := a.DB.Table("aircondition").Where("id = ?", airConditionId).First(&existingAirCondition).Error; err != nil {
+	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).First(&existingAirCondition).Error; err != nil {
 		return nil, err
 	}
 	updates := map[string]interface{}{
@@ -37,7 +37,7 @@ func (a *AirConditionRepository) UpdateAirCondition(airConditionId int, dto airc
 		"status":  dto.Status,
 	}
 
-	if err := a.DB.Table("aircondition").Where("id = ?", airConditionId).Updates(updates).Error; err != nil {
+	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).Updates(updates).Error; err != nil {
 		return nil, err
 	}
 	if err := a.DB.First(&existingAirCondition, airConditionId).Error; err != nil {
@@ -47,7 +47,7 @@ func (a *AirConditionRepository) UpdateAirCondition(airConditionId int, dto airc
 }
 
 func (a *AirConditionRepository) DeleteAirCondition(airConditionId int) error {
-	result := a.DB.Table("aircondition").Where("id = ?", airConditionId).Update("deleted_at", time.Now())
+	result := a.DB.Table("airCondition").Where("id = ?", airConditionId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
