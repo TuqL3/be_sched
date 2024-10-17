@@ -32,10 +32,6 @@ func main() {
 	roomService := services.NewRoomService(roomRepository)
 	roomController := controllers.NewRoomController(roomService)
 
-	equipmentRepository := repositories.NewEquipmentRepository(config.DB)
-	equipmentService := services.NewEquipmentService(equipmentRepository)
-	equipmentController := controllers.NewEquipmentController(equipmentService)
-
 	reportRepository := repositories.NewReportRepository(config.DB)
 	reportService := services.NewReportService(reportRepository)
 	reportController := controllers.NewReportController(reportService)
@@ -58,7 +54,6 @@ func main() {
 
 	routes.UserRoute(router, userController)
 	routes.RoomRoute(router, roomController)
-	routes.EquipmentRoute(router, equipmentController)
 	routes.ReportRoute(router, reportController)
 	routes.RoomScheduleRoute(router, roomScheduleController)
 	routes.ComputerRoute(router, computerController)
