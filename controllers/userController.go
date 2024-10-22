@@ -127,10 +127,15 @@ func (u *UserController) Login(c *gin.Context) {
 		return
 	}
 
+	type LoginResponse struct {
+		Token string       `json:"token"`
+		User  *models.User `json:"user"`
+	}
+
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
 		Message: "User logged in",
-		Data: utils.LoginResponse{
+		Data: LoginResponse{
 			User:  user,
 			Token: token,
 		},

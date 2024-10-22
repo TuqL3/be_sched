@@ -2,7 +2,6 @@ package utils
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"server/models"
 )
 
 type Response struct {
@@ -10,11 +9,6 @@ type Response struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 	Error   string      `json:"error,omitempty"`
-}
-
-type LoginResponse struct {
-	Token string       `json:"token"`
-	User  *models.User `json:"user"`
 }
 
 type Claims struct {

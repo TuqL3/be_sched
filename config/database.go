@@ -36,7 +36,14 @@ func PostgresConnection() {
 	fmt.Println("Connection to database", sqlDB.Ping() == nil)
 	DB = db
 
-	if err := db.AutoMigrate(&models.User{}, &models.Equipment{}, &models.Room{}, &models.Report{}, &models.RoomSchedule{}); err != nil {
+	if err := db.AutoMigrate(
+		&models.User{},
+		&models.TandCh{},
+		&models.Room{},
+		&models.Report{},
+		&models.RoomSchedule{},
+		&models.AirCondition{},
+		&models.Computer{}); err != nil {
 		panic(err)
 	}
 }

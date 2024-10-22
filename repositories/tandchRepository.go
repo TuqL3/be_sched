@@ -6,6 +6,7 @@ import (
 	"server/dtos/tandch"
 	"server/interface/Repository"
 	"server/models"
+	"server/utils"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func (e *TAndChRepository) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto)
 	m := &models.TandCh{
 		Name:   createTAndChDto.Name,
 		RoomID: createTAndChDto.RoomID,
-		Status: models.EquipmentStatus(createTAndChDto.Status),
+		Status: utils.EquipmentStatus(createTAndChDto.Status),
 	}
 	return m, nil
 }

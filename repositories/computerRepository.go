@@ -6,6 +6,7 @@ import (
 	"server/dtos/computer"
 	"server/interface/Repository"
 	"server/models"
+	"server/utils"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func (e *ComputerRepository) CreateCompute(createComputeDto *computer.CreateComp
 	m := &models.Computer{
 		Name:   createComputeDto.Name,
 		RoomID: createComputeDto.RoomID,
-		Status: models.EquipmentStatus(createComputeDto.Status),
+		Status: utils.EquipmentStatus(createComputeDto.Status),
 	}
 	return m, nil
 }

@@ -6,6 +6,7 @@ import (
 	"server/dtos/airCondition"
 	"server/interface/Repository"
 	"server/models"
+	"server/utils"
 	"time"
 )
 
@@ -21,7 +22,7 @@ func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airCo
 	m := &models.AirCondition{
 		Name:   createAirConditionDto.Name,
 		RoomID: createAirConditionDto.RoomID,
-		Status: models.EquipmentStatus(createAirConditionDto.Status),
+		Status: utils.EquipmentStatus(createAirConditionDto.Status),
 	}
 	return m, nil
 }
