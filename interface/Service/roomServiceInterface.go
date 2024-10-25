@@ -7,7 +7,7 @@ import (
 
 type RoomServiceInterface interface {
 	CreateRoom(createRoomDto *room.CreateRoomDto) (*models.Room, error)
-	UpdateRoom(roomId int, dto room.UpdateRoomDto) (*models.Room, error)
-	DeleteRoom(roomId int) error
+	UpdateRoom(roomId uint, dto room.UpdateRoomDto) (*models.Room, error)
+	DeleteRoom(roomId uint) error
 	GetAllRooms() ([]*models.Room, error)
 }

@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"server/dtos/roomSchedule"
 	"server/interface/Repository"
 	"server/models"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type RoomScheduleRepository struct {
@@ -29,7 +30,7 @@ func (r *RoomScheduleRepository) CreateRoomSchedule(createRoomScheduleDto *roomS
 	return m, nil
 }
 
-func (r *RoomScheduleRepository) UpdateRoomSchedule(roomScheduleId int, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
+func (r *RoomScheduleRepository) UpdateRoomSchedule(roomScheduleId uint, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
 	var existingRoomSchedule models.RoomSchedule
 	if err := r.DB.Table("room_schedule").Where("id = ?", roomScheduleId).First(&existingRoomSchedule).Error; err != nil {
 		return nil, err
@@ -51,7 +52,7 @@ func (r *RoomScheduleRepository) UpdateRoomSchedule(roomScheduleId int, dto room
 	return &existingRoomSchedule, nil
 }
 
-func (r *RoomScheduleRepository) DeleteRoomSchedule(roomScheduleId int) error {
+func (r *RoomScheduleRepository) DeleteRoomSchedule(roomScheduleId uint) error {
 	result := r.DB.Table("room_schedule").Where("id = ?", roomScheduleId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error

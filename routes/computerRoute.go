@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"server/controllers"
 	"server/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 func ComputerRoute(route *gin.Engine, controller *controllers.ComputerController) {
@@ -15,6 +16,7 @@ func ComputerRoute(route *gin.Engine, controller *controllers.ComputerController
 		computerMiddleware.POST("/create", controller.CreateComputer)
 		computerMiddleware.PUT("/update/:computerId", controller.UpdateComputer)
 		computerMiddleware.DELETE("/delete/:computerId", controller.DeleteComputer)
-		computerMiddleware.GET("/", controller.GetAllComputer)
+		computerMiddleware.GET("/:computerId", controller.GetComputerById)
+		computerMiddleware.GET("", controller.GetAllComputer)
 	}
 }

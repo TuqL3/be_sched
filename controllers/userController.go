@@ -1,9 +1,6 @@
 package controllers
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"server/dtos/user"
@@ -12,6 +9,10 @@ import (
 	"server/utils"
 	"strconv"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var jwtKey = []byte(os.Getenv("JWT_KEY"))
@@ -116,7 +117,7 @@ func (u *UserController) Login(c *gin.Context) {
 		})
 		return
 	}
-	token, err := generateJWT(int(user.ID), user.Role)
+	token, err := generateJWT(uint(user.ID), user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -143,7 +144,7 @@ func (u *UserController) Login(c *gin.Context) {
 	})
 }
 
-func generateJWT(id int, role models.Role) (string, error) {
+func generateJWT(id uint, role models.Role) (string, error) {
 	claims := jwt.MapClaims{
 		"id":   id,
 		"role": role,
@@ -166,7 +167,7 @@ func (u *UserController) UpdateUser(c *gin.Context) {
 		})
 		return
 	}
-	user, err := u.userService.UpdateUser(int(userId), userUpdateDto)
+	user, err := u.userService.UpdateUser(uint(userId), userUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -195,7 +196,7 @@ func (u *UserController) DeleteUser(c *gin.Context) {
 		})
 		return
 	}
-	if err := u.userService.DeleteUser(int(id)); err != nil {
+	if err := u.userService.DeleteUser(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "User delete error",
@@ -232,4 +233,33 @@ func (u *UserController) GetAllUsers(c *gin.Context) {
 		Error:   "",
 	})
 	return
+}
+
+func (u *UserController) GetUserById(c *gin.Context) {
+	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	user, err := u.userService.GetUserById(uint(uint(userId)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "User get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "User get successfully",
+		Data:    user,
+		Error:   "",
+	})
 }

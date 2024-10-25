@@ -67,7 +67,7 @@ func (e *AirConditionController) DeleteAirCondition(c *gin.Context) {
 		})
 		return
 	}
-	if err := e.airConditionService.DeleteAirCondition(id); err != nil {
+	if err := e.airConditionService.DeleteAirCondition(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "Delete airCondition failed",
@@ -98,7 +98,7 @@ func (e *AirConditionController) UpdateAirCondition(c *gin.Context) {
 		return
 	}
 
-	airCondition, err := e.airConditionService.UpdateAirCondition(id, airConditionUpdateDto)
+	airCondition, err := e.airConditionService.UpdateAirCondition(uint(id), airConditionUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

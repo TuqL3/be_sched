@@ -15,11 +15,11 @@ func (r *RoomSheduleService) CreateRoomSchedule(createRoomScheduleDto *roomSched
 	return r.roomScheduleRepo.CreateRoomSchedule(createRoomScheduleDto)
 }
 
-func (r *RoomSheduleService) UpdateRoomSchedule(roomScheduleId int, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
+func (r *RoomSheduleService) UpdateRoomSchedule(roomScheduleId uint, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
 	return r.roomScheduleRepo.UpdateRoomSchedule(roomScheduleId, dto)
 }
 
-func (r *RoomSheduleService) DeleteRoomSchedule(roomScheduleId int) error {
+func (r *RoomSheduleService) DeleteRoomSchedule(roomScheduleId uint) error {
 	return r.roomScheduleRepo.DeleteRoomSchedule(roomScheduleId)
 }
 

@@ -20,6 +20,7 @@ func UserRoute(route *gin.Engine, controller *controllers.UserController) {
 
 		userRouteMiddleware.PUT("/update/:userId", controller.UpdateUser)
 		userRouteMiddleware.DELETE("/delete/:userId", controller.DeleteUser)
+		userRouteMiddleware.GET("/:userId", controller.GetUserById)
 		userRouteMiddleware.GET("", controller.GetAllUsers)
 	}
 }

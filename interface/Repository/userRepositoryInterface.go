@@ -8,7 +8,8 @@ import (
 type UserRepositoryInterface interface {
 	Register(userRegisterDto *user.UserRegister) (*models.User, error)
 	FindUserByUsername(username string) (*models.User, error)
-	UpdateUser(userId int, dto user.UserUpdateDto) (*models.User, error)
-	DeleteUser(userId int) error
+	GetUserById(userId uint) (*models.User, error)
+	UpdateUser(userId uint, dto user.UserUpdateDto) (*models.User, error)
+	DeleteUser(userId uint) error
 	GetAllUsers(fullName string) ([]*models.User, error)
 }

@@ -69,7 +69,7 @@ func (r *RoomController) DeleteRoom(c *gin.Context) {
 		})
 		return
 	}
-	if err := r.roomService.DeleteRoom(id); err != nil {
+	if err := r.roomService.DeleteRoom(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "Delete room failed",
@@ -100,7 +100,7 @@ func (r *RoomController) UpdateRoom(c *gin.Context) {
 		})
 		return
 	}
-	room, err := r.roomService.UpdateRoom(roomId, roomUpdateDto)
+	room, err := r.roomService.UpdateRoom(uint(roomId), roomUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

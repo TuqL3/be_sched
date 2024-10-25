@@ -15,11 +15,11 @@ func (T *TAndChService) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto) (*
 	return T.tAndChService.CreateTAndCh(createTAndChDto)
 }
 
-func (T *TAndChService) UpdateTAndCh(TAndChId int, dto tandch.UpdateTandChDto) (*models.TandCh, error) {
+func (T *TAndChService) UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDto) (*models.TandCh, error) {
 	return T.tAndChService.UpdateTAndCh(TAndChId, dto)
 }
 
-func (T *TAndChService) DeleteTAndCh(TAndChId int) error {
+func (T *TAndChService) DeleteTAndCh(TAndChId uint) error {
 	return T.tAndChService.DeleteTAndCh(TAndChId)
 }
 

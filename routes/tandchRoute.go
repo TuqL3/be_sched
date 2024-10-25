@@ -15,6 +15,6 @@ func TAndChtRoute(route *gin.Engine, controller *controllers.TAndChController) {
 		tandchMiddleware.POST("/create", controller.CreateTAndCh)
 		tandchMiddleware.PUT("/update/:tAndChId", controller.UpdateTAndCh)
 		tandchMiddleware.DELETE("/delete/:tAndChId", controller.DeleteTAndCh)
-		tandchMiddleware.GET("/", controller.GetAllTAndCh)
+		tandchMiddleware.GET("", controller.GetAllTAndCh)
 	}
 }

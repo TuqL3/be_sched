@@ -108,7 +108,7 @@ func (r *ReportController) DeleteReport(c *gin.Context) {
 		})
 		return
 	}
-	if err := r.reportService.DeleteReport(id); err != nil {
+	if err := r.reportService.DeleteReport(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "internal server error",
@@ -139,7 +139,7 @@ func (r *ReportController) UpdateReport(c *gin.Context) {
 		return
 	}
 
-	report, err := r.reportService.UpdateReport(reportId, reportUpdateDto)
+	report, err := r.reportService.UpdateReport(uint(reportId), reportUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

@@ -14,6 +14,6 @@ func ReportRoute(route *gin.Engine, controller *controllers.ReportController) {
 		reportRouteMiddleware.POST("/create", controller.CreateReport)
 		reportRouteMiddleware.PUT("/update/:reportId", controller.UpdateReport)
 		reportRouteMiddleware.DELETE("/delete/:reportId", controller.DeleteReport)
-		reportRouteMiddleware.GET("/", controller.GetAllReport)
+		reportRouteMiddleware.GET("", controller.GetAllReport)
 	}
 }

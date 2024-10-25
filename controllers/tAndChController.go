@@ -67,7 +67,7 @@ func (e *TAndChController) DeleteTAndCh(c *gin.Context) {
 		})
 		return
 	}
-	if err := e.tAndChService.DeleteTAndCh(id); err != nil {
+	if err := e.tAndChService.DeleteTAndCh(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "Delete tAndCh failed",
@@ -98,7 +98,7 @@ func (e *TAndChController) UpdateTAndCh(c *gin.Context) {
 		return
 	}
 
-	tAndCh, err := e.tAndChService.UpdateTAndCh(id, tAndChUpdateDto)
+	tAndCh, err := e.tAndChService.UpdateTAndCh(uint(id), tAndChUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

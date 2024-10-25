@@ -14,6 +14,6 @@ func RoomScheduleRoute(route *gin.Engine, controller *controllers.RoomScheduleCo
 		roomScheduleMiddleware.POST("/create", controller.CreateRoomSchedule)
 		roomScheduleMiddleware.PUT("/update/:roomScheduleId", controller.UpdateRoomSchedule)
 		roomScheduleMiddleware.DELETE("/delete/:roomScheduleId", controller.DeleteRoomSchedule)
-		roomScheduleMiddleware.GET("/", controller.GetAllRoomSchedule)
+		roomScheduleMiddleware.GET("", controller.GetAllRoomSchedule)
 	}
 }

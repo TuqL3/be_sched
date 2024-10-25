@@ -2,12 +2,13 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"server/dtos/airCondition"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type AirConditionRepository struct {
@@ -27,7 +28,7 @@ func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airCo
 	return m, nil
 }
 
-func (a *AirConditionRepository) UpdateAirCondition(airConditionId int, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error) {
+func (a *AirConditionRepository) UpdateAirCondition(airConditionId uint, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error) {
 	var existingAirCondition models.AirCondition
 	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).First(&existingAirCondition).Error; err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func (a *AirConditionRepository) UpdateAirCondition(airConditionId int, dto airC
 	return &existingAirCondition, nil
 }
 
-func (a *AirConditionRepository) DeleteAirCondition(airConditionId int) error {
+func (a *AirConditionRepository) DeleteAirCondition(airConditionId uint) error {
 	result := a.DB.Table("airCondition").Where("id = ?", airConditionId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
@@ -60,7 +61,7 @@ func (a *AirConditionRepository) DeleteAirCondition(airConditionId int) error {
 
 func (a *AirConditionRepository) GetAllAirConditions() ([]*models.AirCondition, error) {
 	var airConditions []*models.AirCondition
-	if err := a.DB.Find(&airConditions).Error; err != nil {
+	if err := a.DB.Preload("Room").Find(&airConditions).Error; err != nil {
 		return nil, err
 	}
 	return airConditions, nil

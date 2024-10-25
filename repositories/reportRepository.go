@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"server/dtos/report"
 	"server/interface/Repository"
 	"server/models"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type ReportRepository struct {
@@ -28,7 +29,7 @@ func (r *ReportRepository) CreateReport(createReportDto *report.CreateReportDto)
 	return m, nil
 }
 
-func (r *ReportRepository) UpdateReport(reportId int, dto report.UpdateReportDto) (*models.Report, error) {
+func (r *ReportRepository) UpdateReport(reportId uint, dto report.UpdateReportDto) (*models.Report, error) {
 	var existingReport models.Report
 	if err := r.DB.Table("reports").Where("id = ?", reportId).First(&existingReport).Error; err != nil {
 		return nil, err
@@ -49,7 +50,7 @@ func (r *ReportRepository) UpdateReport(reportId int, dto report.UpdateReportDto
 	return &existingReport, nil
 }
 
-func (r *ReportRepository) DeleteReport(reportId int) error {
+func (r *ReportRepository) DeleteReport(reportId uint) error {
 	result := r.DB.Table("reports").Where("id = ?", reportId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error

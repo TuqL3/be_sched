@@ -7,7 +7,7 @@ import (
 
 type TAndChServiceInterface interface {
 	CreateTAndCh(createTAndChDto *tandch.CreateTandChDto) (*models.TandCh, error)
-	UpdateTAndCh(TAndChId int, dto tandch.UpdateTandChDto) (*models.TandCh, error)
-	DeleteTAndCh(TAndChId int) error
+	UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDto) (*models.TandCh, error)
+	DeleteTAndCh(TAndChId uint) error
 	GetAllTAndChs() ([]*models.TandCh, error)
 }

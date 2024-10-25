@@ -2,16 +2,25 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"log"
 	"server/dtos/user"
 	"server/interface/Repository"
 	"server/models"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
 	DB *gorm.DB
+}
+
+func (u *UserRepository) GetUserById(userId uint) (*models.User, error) {
+	var user *models.User
+	if err := u.DB.First(&user, userId).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (u *UserRepository) GetAllUsers(fullName string) ([]*models.User, error) {
@@ -26,7 +35,7 @@ func (u *UserRepository) GetAllUsers(fullName string) ([]*models.User, error) {
 	return users, nil
 }
 
-func (u *UserRepository) DeleteUser(userId int) error {
+func (u *UserRepository) DeleteUser(userId uint) error {
 	result := u.DB.Table("users").Where("id = ?", userId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
@@ -37,7 +46,7 @@ func (u *UserRepository) DeleteUser(userId int) error {
 	return nil
 }
 
-func (u *UserRepository) UpdateUser(userId int, dto user.UserUpdateDto) (*models.User, error) {
+func (u *UserRepository) UpdateUser(userId uint, dto user.UserUpdateDto) (*models.User, error) {
 	var existingUser models.User
 	if err := u.DB.First(&existingUser, userId).Error; err != nil {
 		log.Printf("User not found: %v", err)

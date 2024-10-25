@@ -2,16 +2,25 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"server/dtos/computer"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type ComputerRepository struct {
 	DB *gorm.DB
+}
+
+func (e *ComputerRepository) GetComputerById(computerId uint) (*models.Computer, error) {
+	var computer models.Computer
+	if err := e.DB.Table("computer").Where("id = ?", computerId).Preload("Room").First(&computer).Error; err != nil {
+		return nil, err
+	}
+	return &computer, nil
 }
 
 func (e *ComputerRepository) CreateCompute(createComputeDto *computer.CreateComputerDto) (*models.Computer, error) {
@@ -27,7 +36,7 @@ func (e *ComputerRepository) CreateCompute(createComputeDto *computer.CreateComp
 	return m, nil
 }
 
-func (e *ComputerRepository) UpdateCompute(computerId int, dto computer.UpdateComputerDto) (*models.Computer, error) {
+func (e *ComputerRepository) UpdateCompute(computerId uint, dto computer.UpdateComputerDto) (*models.Computer, error) {
 	var existingComputer models.Computer
 	if err := e.DB.Table("computer").Where("id = ?", computerId).First(&existingComputer).Error; err != nil {
 		return nil, err
@@ -47,7 +56,7 @@ func (e *ComputerRepository) UpdateCompute(computerId int, dto computer.UpdateCo
 	return &existingComputer, nil
 }
 
-func (e *ComputerRepository) DeleteCompute(computerId int) error {
+func (e *ComputerRepository) DeleteCompute(computerId uint) error {
 	result := e.DB.Table("computer").Where("id = ?", computerId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
@@ -60,7 +69,7 @@ func (e *ComputerRepository) DeleteCompute(computerId int) error {
 
 func (e *ComputerRepository) GetAllComputes() ([]*models.Computer, error) {
 	var computers []*models.Computer
-	if err := e.DB.Find(&computers).Error; err != nil {
+	if err := e.DB.Preload("Room").Find(&computers).Error; err != nil {
 		return nil, err
 	}
 	return computers, nil

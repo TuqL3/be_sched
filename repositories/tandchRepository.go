@@ -2,12 +2,13 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"server/dtos/tandch"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type TAndChRepository struct {
@@ -27,7 +28,7 @@ func (e *TAndChRepository) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto)
 	return m, nil
 }
 
-func (e *TAndChRepository) UpdateTAndCh(TAndChId int, dto tandch.UpdateTandChDto) (*models.TandCh, error) {
+func (e *TAndChRepository) UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDto) (*models.TandCh, error) {
 	var existingTAnd models.TandCh
 	if err := e.DB.Table("tandch").Where("id = ?", TAndChId).First(&existingTAnd).Error; err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func (e *TAndChRepository) UpdateTAndCh(TAndChId int, dto tandch.UpdateTandChDto
 	return &existingTAnd, nil
 }
 
-func (e *TAndChRepository) DeleteTAndCh(TAndChId int) error {
+func (e *TAndChRepository) DeleteTAndCh(TAndChId uint) error {
 	result := e.DB.Table("tandch").Where("id = ?", TAndChId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
@@ -60,7 +61,7 @@ func (e *TAndChRepository) DeleteTAndCh(TAndChId int) error {
 
 func (e *TAndChRepository) GetAllTAndChs() ([]*models.TandCh, error) {
 	var tandchs []*models.TandCh
-	if err := e.DB.Find(&tandchs).Error; err != nil {
+	if err := e.DB.Preload("Room").Find(&tandchs).Error; err != nil {
 		return nil, err
 	}
 	return tandchs, nil

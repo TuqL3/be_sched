@@ -15,11 +15,11 @@ func (r *ReportService) CreateReport(createReportDto *report.CreateReportDto) (*
 	return r.reportRepository.CreateReport(createReportDto)
 }
 
-func (r *ReportService) UpdateReport(reportId int, dto report.UpdateReportDto) (*models.Report, error) {
+func (r *ReportService) UpdateReport(reportId uint, dto report.UpdateReportDto) (*models.Report, error) {
 	return r.reportRepository.UpdateReport(reportId, dto)
 }
 
-func (r *ReportService) DeleteReport(reportId int) error {
+func (r *ReportService) DeleteReport(reportId uint) error {
 	return r.reportRepository.DeleteReport(reportId)
 }
 

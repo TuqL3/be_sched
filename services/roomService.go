@@ -15,11 +15,11 @@ func (r *RoomService) CreateRoom(createRoomDto *room.CreateRoomDto) (*models.Roo
 	return r.roomRepository.CreateRoom(createRoomDto)
 }
 
-func (r *RoomService) UpdateRoom(roomId int, dto room.UpdateRoomDto) (*models.Room, error) {
+func (r *RoomService) UpdateRoom(roomId uint, dto room.UpdateRoomDto) (*models.Room, error) {
 	return r.roomRepository.UpdateRoom(roomId, dto)
 }
 
-func (r *RoomService) DeleteRoom(roomId int) error {
+func (r *RoomService) DeleteRoom(roomId uint) error {
 	return r.roomRepository.DeleteRoom(roomId)
 }
 

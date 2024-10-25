@@ -7,7 +7,7 @@ import (
 
 type RoomScheduleServiceInterface interface {
 	CreateRoomSchedule(createRoomScheduleDto *roomSchedule.CreateRoomScheduleDto) (*models.RoomSchedule, error)
-	UpdateRoomSchedule(roomScheduleId int, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error)
-	DeleteRoomSchedule(roomScheduleId int) error
+	UpdateRoomSchedule(roomScheduleId uint, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error)
+	DeleteRoomSchedule(roomScheduleId uint) error
 	GetAllRoomSchedules() ([]*models.RoomSchedule, error)
 }

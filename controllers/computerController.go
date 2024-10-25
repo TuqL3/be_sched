@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"server/dtos/computer"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ComputerController struct {
@@ -67,7 +68,7 @@ func (e *ComputerController) DeleteComputer(c *gin.Context) {
 		})
 		return
 	}
-	if err := e.computerService.DeleteCompute(id); err != nil {
+	if err := e.computerService.DeleteCompute(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "Delete computer failed",
@@ -98,7 +99,7 @@ func (e *ComputerController) UpdateComputer(c *gin.Context) {
 		return
 	}
 
-	computer, err := e.computerService.UpdateCompute(id, computerUpdateDto)
+	computer, err := e.computerService.UpdateCompute(uint(id), computerUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -134,4 +135,35 @@ func (r *ComputerController) GetAllComputer(c *gin.Context) {
 		Error:   "",
 	})
 	return
+}
+
+func (r *ComputerController) GetComputerById(c *gin.Context) {
+	computerId, err := strconv.ParseInt(c.Param("computerId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	computer, err := r.computerService.GetComputerById(uint(computerId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Computer get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Computer get successfully",
+		Data:    computer,
+		Error:   "",
+	})
+
 }

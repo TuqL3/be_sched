@@ -7,7 +7,8 @@ import (
 
 type AirConditionServiceInterface interface {
 	CreateAirCondition(createAirConditionDto *airCondition.CreateAirConditionDto) (*models.AirCondition, error)
-	UpdateAirCondition(airConditionId int, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error)
-	DeleteAirCondition(airConditionId int) error
+	UpdateAirCondition(airConditionId uint, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error)
+	DeleteAirCondition(airConditionId uint) error
+	GetAirConditionById(airConditionId uint) (*models.AirCondition, error)
 	GetAllAirConditions() ([]*models.AirCondition, error)
 }
