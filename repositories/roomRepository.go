@@ -14,6 +14,14 @@ type RoomRepository struct {
 	DB *gorm.DB
 }
 
+func (r *RoomRepository) GetRoomById(roomId uint) (*models.Room, error) {
+	var room models.Room
+	if err := r.DB.Table("room").Where("id = ?", roomId).Preload("Room").First(&room).Error; err != nil {
+		return nil, err
+	}
+	return &room, nil
+}
+
 func (r *RoomRepository) CreateRoom(createRoomDto *room.CreateRoomDto) (*models.Room, error) {
 	if err := r.DB.Table("rooms").Create(createRoomDto).Error; err != nil {
 		return nil, err

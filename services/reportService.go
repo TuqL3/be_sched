@@ -11,6 +11,10 @@ type ReportService struct {
 	reportRepository Repository.ReportRepositoryInterface
 }
 
+func (r *ReportService) GetReportById(reportId uint) (*models.Report, error) {
+	return r.reportRepository.GetReportById(reportId)
+}
+
 func (r *ReportService) CreateReport(createReportDto *report.CreateReportDto) (*models.Report, error) {
 	return r.reportRepository.CreateReport(createReportDto)
 }

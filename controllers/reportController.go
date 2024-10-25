@@ -177,3 +177,34 @@ func (r *ReportController) GetAllReport(c *gin.Context) {
 	})
 	return
 }
+
+func (r *ReportController) GetReportById(c *gin.Context) {
+	reportId, err := strconv.ParseInt(c.Param("reportId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	report, err := r.reportService.GetReportById(uint(reportId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Report get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Report get successfully",
+		Data:    report,
+		Error:   "",
+	})
+
+}

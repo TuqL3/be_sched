@@ -10,4 +10,5 @@ type ReportRepositoryInterface interface {
 	UpdateReport(reportId uint, dto report.UpdateReportDto) (*models.Report, error)
 	DeleteReport(reportId uint) error
 	GetAllReports() ([]*models.Report, error)
+	GetReportById(reportId uint) (*models.Report, error)
 }

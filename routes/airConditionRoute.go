@@ -12,6 +12,7 @@ func AirConditionRoute(route *gin.Engine, controller *controllers.AirConditionCo
 		airConditionMiddleware.Use(middleware.AuthMiddleware())
 		airConditionMiddleware.Use(middleware.AdminOnly())
 
+		airConditionMiddleware.GET("/:airConditionId", controller.GetAirConditionById)
 		airConditionMiddleware.GET("", controller.GetAllAirCondition)
 		airConditionMiddleware.POST("/create", controller.CreateAirCondition)
 		airConditionMiddleware.PUT("/update/:airConditionId", controller.UpdateAirCondition)

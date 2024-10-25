@@ -11,6 +11,10 @@ type AirConditionService struct {
 	airConditionService Repository.AirConditionRepositoryInterface
 }
 
+func (e *AirConditionService) GetAirConditionById(airConditionId uint) (*models.AirCondition, error) {
+	return e.airConditionService.GetAirConditionById(airConditionId)
+}
+
 func (e *AirConditionService) CreateAirCondition(createAirConditionDto *airCondition.CreateAirConditionDto) (*models.AirCondition, error) {
 	return e.airConditionService.CreateAirCondition(createAirConditionDto)
 }

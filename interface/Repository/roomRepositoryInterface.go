@@ -10,4 +10,5 @@ type RoomRepositoryInterface interface {
 	UpdateRoom(roomId uint, dto room.UpdateRoomDto) (*models.Room, error)
 	DeleteRoom(roomId uint) error
 	GetAllRooms() ([]*models.Room, error)
+	GetRoomById(roomId uint) (*models.Room, error)
 }

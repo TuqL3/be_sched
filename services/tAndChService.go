@@ -11,6 +11,10 @@ type TAndChService struct {
 	tAndChService Repository.TAndChRepositoryInterface
 }
 
+func (T *TAndChService) GetTAndChById(TAndChId uint) (*models.TandCh, error) {
+	return T.tAndChService.GetTAndChById(TAndChId)
+}
+
 func (T *TAndChService) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto) (*models.TandCh, error) {
 	return T.tAndChService.CreateTAndCh(createTAndChDto)
 }

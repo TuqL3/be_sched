@@ -10,4 +10,5 @@ type TAndChServiceInterface interface {
 	UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDto) (*models.TandCh, error)
 	DeleteTAndCh(TAndChId uint) error
 	GetAllTAndChs() ([]*models.TandCh, error)
+	GetTAndChById(TAndChId uint) (*models.TandCh, error)
 }

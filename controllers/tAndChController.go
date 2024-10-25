@@ -135,3 +135,34 @@ func (r *TAndChController) GetAllTAndCh(c *gin.Context) {
 	})
 	return
 }
+
+func (r *TAndChController) GetTAndChById(c *gin.Context) {
+	tandchId, err := strconv.ParseInt(c.Param("tAndChId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	tandch, err := r.tAndChService.GetTAndChById(uint(tandchId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Table and chair get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Table and chair get successfully",
+		Data:    tandch,
+		Error:   "",
+	})
+
+}

@@ -137,3 +137,34 @@ func (r *RoomController) GetAllRoom(c *gin.Context) {
 	})
 	return
 }
+
+func (r *RoomController) GetRoomById(c *gin.Context) {
+	roomId, err := strconv.ParseInt(c.Param("roomId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	room, err := r.roomService.GetRoomById(uint(roomId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Room get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Room get successfully",
+		Data:    room,
+		Error:   "",
+	})
+
+}

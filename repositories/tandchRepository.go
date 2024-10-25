@@ -15,6 +15,14 @@ type TAndChRepository struct {
 	DB *gorm.DB
 }
 
+func (e *TAndChRepository) GetTAndChById(TAndChId uint) (*models.TandCh, error) {
+	var tandch models.TandCh
+	if err := e.DB.Table("tandch").Where("id = ?", TAndChId).Preload("Room").First(&tandch).Error; err != nil {
+		return nil, err
+	}
+	return &tandch, nil
+}
+
 func (e *TAndChRepository) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto) (*models.TandCh, error) {
 	if err := e.DB.Table("tandch").Create(createTAndChDto).Error; err != nil {
 		return nil, err

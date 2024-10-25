@@ -15,6 +15,14 @@ type AirConditionRepository struct {
 	DB *gorm.DB
 }
 
+func (a *AirConditionRepository) GetAirConditionById(airConditionId uint) (*models.AirCondition, error) {
+	var airCondition models.AirCondition
+	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).Preload("Room").First(&airCondition).Error; err != nil {
+		return nil, err
+	}
+	return &airCondition, nil
+}
+
 func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airCondition.CreateAirConditionDto) (*models.AirCondition, error) {
 	if err := a.DB.Table("airCondition").Create(createAirConditionDto).Error; err != nil {
 		return nil, err

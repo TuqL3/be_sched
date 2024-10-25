@@ -11,6 +11,10 @@ type RoomService struct {
 	roomRepository Repository.RoomRepositoryInterface
 }
 
+func (r *RoomService) GetRoomById(roomId uint) (*models.Room, error) {
+	return r.roomRepository.GetRoomById(roomId)
+}
+
 func (r *RoomService) CreateRoom(createRoomDto *room.CreateRoomDto) (*models.Room, error) {
 	return r.roomRepository.CreateRoom(createRoomDto)
 }

@@ -135,3 +135,34 @@ func (r *AirConditionController) GetAllAirCondition(c *gin.Context) {
 	})
 	return
 }
+
+func (r *AirConditionController) GetAirConditionById(c *gin.Context) {
+	airConditionId, err := strconv.ParseInt(c.Param("airConditionId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	airCondition, err := r.airConditionService.GetAirConditionById(uint(airConditionId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Air condition get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Air condition get successfully",
+		Data:    airCondition,
+		Error:   "",
+	})
+
+}
