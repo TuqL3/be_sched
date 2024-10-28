@@ -22,5 +22,5 @@ type TandCh struct {
 }
 
 func (c *TandCh) TableName() string {
-	return "tandch"
+	return "table"
 }

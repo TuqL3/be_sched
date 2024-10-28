@@ -17,7 +17,7 @@ type ComputerRepository struct {
 
 func (e *ComputerRepository) GetComputerById(computerId uint) (*models.Computer, error) {
 	var computer models.Computer
-	if err := e.DB.Table("computer").Where("id = ?", computerId).Preload("Room").First(&computer).Error; err != nil {
+	if err := e.DB.Table("computer").Where("id = ?", computerId).Preload("Room").Preload("Category").First(&computer).Error; err != nil {
 		return nil, err
 	}
 	return &computer, nil
@@ -69,7 +69,7 @@ func (e *ComputerRepository) DeleteCompute(computerId uint) error {
 
 func (e *ComputerRepository) GetAllComputes() ([]*models.Computer, error) {
 	var computers []*models.Computer
-	if err := e.DB.Preload("Room").Find(&computers).Error; err != nil {
+	if err := e.DB.Preload("Room").Preload("Category").Find(&computers).Error; err != nil {
 		return nil, err
 	}
 	return computers, nil

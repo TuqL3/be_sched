@@ -17,14 +17,14 @@ type AirConditionRepository struct {
 
 func (a *AirConditionRepository) GetAirConditionById(airConditionId uint) (*models.AirCondition, error) {
 	var airCondition models.AirCondition
-	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).Preload("Room").First(&airCondition).Error; err != nil {
+	if err := a.DB.Table("aircondition").Where("id = ?", airConditionId).Preload("Room").Preload("Category").First(&airCondition).Error; err != nil {
 		return nil, err
 	}
 	return &airCondition, nil
 }
 
 func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airCondition.CreateAirConditionDto) (*models.AirCondition, error) {
-	if err := a.DB.Table("airCondition").Create(createAirConditionDto).Error; err != nil {
+	if err := a.DB.Table("aircondition").Create(createAirConditionDto).Error; err != nil {
 		return nil, err
 	}
 
@@ -38,7 +38,7 @@ func (a *AirConditionRepository) CreateAirCondition(createAirConditionDto *airCo
 
 func (a *AirConditionRepository) UpdateAirCondition(airConditionId uint, dto airCondition.UpdateAirConditionDto) (*models.AirCondition, error) {
 	var existingAirCondition models.AirCondition
-	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).First(&existingAirCondition).Error; err != nil {
+	if err := a.DB.Table("aircondition").Where("id = ?", airConditionId).First(&existingAirCondition).Error; err != nil {
 		return nil, err
 	}
 	updates := map[string]interface{}{
@@ -47,7 +47,7 @@ func (a *AirConditionRepository) UpdateAirCondition(airConditionId uint, dto air
 		"status":  dto.Status,
 	}
 
-	if err := a.DB.Table("airCondition").Where("id = ?", airConditionId).Updates(updates).Error; err != nil {
+	if err := a.DB.Table("aircondition").Where("id = ?", airConditionId).Updates(updates).Error; err != nil {
 		return nil, err
 	}
 	if err := a.DB.First(&existingAirCondition, airConditionId).Error; err != nil {
@@ -57,7 +57,7 @@ func (a *AirConditionRepository) UpdateAirCondition(airConditionId uint, dto air
 }
 
 func (a *AirConditionRepository) DeleteAirCondition(airConditionId uint) error {
-	result := a.DB.Table("airCondition").Where("id = ?", airConditionId).Update("deleted_at", time.Now())
+	result := a.DB.Table("aircondition").Where("id = ?", airConditionId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
@@ -69,7 +69,7 @@ func (a *AirConditionRepository) DeleteAirCondition(airConditionId uint) error {
 
 func (a *AirConditionRepository) GetAllAirConditions() ([]*models.AirCondition, error) {
 	var airConditions []*models.AirCondition
-	if err := a.DB.Preload("Room").Find(&airConditions).Error; err != nil {
+	if err := a.DB.Preload("Room").Preload("Category").Find(&airConditions).Error; err != nil {
 		return nil, err
 	}
 	return airConditions, nil

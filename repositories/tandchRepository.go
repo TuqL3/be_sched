@@ -17,14 +17,14 @@ type TAndChRepository struct {
 
 func (e *TAndChRepository) GetTAndChById(TAndChId uint) (*models.TandCh, error) {
 	var tandch models.TandCh
-	if err := e.DB.Table("tandch").Where("id = ?", TAndChId).Preload("Room").First(&tandch).Error; err != nil {
+	if err := e.DB.Table("table").Where("id = ?", TAndChId).Preload("Room").Preload("Category").First(&tandch).Error; err != nil {
 		return nil, err
 	}
 	return &tandch, nil
 }
 
 func (e *TAndChRepository) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto) (*models.TandCh, error) {
-	if err := e.DB.Table("tandch").Create(createTAndChDto).Error; err != nil {
+	if err := e.DB.Table("table").Create(createTAndChDto).Error; err != nil {
 		return nil, err
 	}
 
@@ -38,7 +38,7 @@ func (e *TAndChRepository) CreateTAndCh(createTAndChDto *tandch.CreateTandChDto)
 
 func (e *TAndChRepository) UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDto) (*models.TandCh, error) {
 	var existingTAnd models.TandCh
-	if err := e.DB.Table("tandch").Where("id = ?", TAndChId).First(&existingTAnd).Error; err != nil {
+	if err := e.DB.Table("table").Where("id = ?", TAndChId).First(&existingTAnd).Error; err != nil {
 		return nil, err
 	}
 	updates := map[string]interface{}{
@@ -47,7 +47,7 @@ func (e *TAndChRepository) UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDt
 		"status":  dto.Status,
 	}
 
-	if err := e.DB.Table("tandch").Where("id = ?", TAndChId).Updates(updates).Error; err != nil {
+	if err := e.DB.Table("table").Where("id = ?", TAndChId).Updates(updates).Error; err != nil {
 		return nil, err
 	}
 	if err := e.DB.First(&existingTAnd, TAndChId).Error; err != nil {
@@ -57,7 +57,7 @@ func (e *TAndChRepository) UpdateTAndCh(TAndChId uint, dto tandch.UpdateTandChDt
 }
 
 func (e *TAndChRepository) DeleteTAndCh(TAndChId uint) error {
-	result := e.DB.Table("tandch").Where("id = ?", TAndChId).Update("deleted_at", time.Now())
+	result := e.DB.Table("table").Where("id = ?", TAndChId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
@@ -69,7 +69,7 @@ func (e *TAndChRepository) DeleteTAndCh(TAndChId uint) error {
 
 func (e *TAndChRepository) GetAllTAndChs() ([]*models.TandCh, error) {
 	var tandchs []*models.TandCh
-	if err := e.DB.Preload("Room").Find(&tandchs).Error; err != nil {
+	if err := e.DB.Preload("Room").Preload("Category").Find(&tandchs).Error; err != nil {
 		return nil, err
 	}
 	return tandchs, nil
