@@ -11,7 +11,7 @@ type TandCh struct {
 	ID         uint                  `json:"id" gorm:"primaryKey;autoIncrement"`
 	RoomID     uint                  `json:"room_id" gorm:"not null"`
 	Room       Room                  `json:"room"`
-	CategoryID uint                  `json:"category_id"`
+	CategoryID uint                  `json:"category_id" gorm:"not null"`
 	Category   Category              `json:"category"`
 	NameType   string                `json:"name_type" gorm:"default:'tandch'"`
 	Status     utils.EquipmentStatus `json:"status" gorm:"type:equipment_status;not null"`
