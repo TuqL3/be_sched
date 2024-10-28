@@ -5,7 +5,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/dtos/roomSchedule"
+	"server/dtos/schedule"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
@@ -22,7 +22,7 @@ func NewRoomScheduleController(roomScheduleService Service.RoomScheduleServiceIn
 }
 
 func (r *RoomScheduleController) CreateRoomSchedule(c *gin.Context) {
-	var roomScheduleDto roomSchedule.CreateRoomScheduleDto
+	var roomScheduleDto schedule.CreateRoomScheduleDto
 
 	user, exists := c.Get("user")
 	if !exists {
@@ -134,7 +134,7 @@ func (r *RoomScheduleController) DeleteRoomSchedule(c *gin.Context) {
 }
 
 func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
-	var roomScheduleDto roomSchedule.UpdateRoomSchedule
+	var roomScheduleDto schedule.UpdateRoomSchedule
 	roomScheduleId, err := strconv.Atoi(c.Param("roomScheduleId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{

@@ -1,4 +1,4 @@
-package roomSchedule
+package schedule
 
 type UpdateRoomSchedule struct {
 	CreateRoomScheduleDto

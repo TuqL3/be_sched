@@ -7,7 +7,7 @@ import (
 )
 
 func RoomScheduleRoute(route *gin.Engine, controller *controllers.RoomScheduleController) {
-	roomScheduleMiddleware := route.Group("/api/v1/roomSchedule")
+	roomScheduleMiddleware := route.Group("/api/v1/schedule")
 	{
 		roomScheduleMiddleware.Use(middleware.AuthMiddleware())
 

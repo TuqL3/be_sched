@@ -3,12 +3,11 @@ package report
 import "github.com/go-playground/validator/v10"
 
 type CreateReportDto struct {
-	UserID        uint   `json:"user_id" gorm:"not null"`
-	RoomID        uint   `json:"room_id" gorm:"not null"`
-	EquipmentID   uint   `json:"equipment_id" gorm:"default:null"`
-	EquipmentType string `json:"equipment_type"`
-	Description   string `json:"description" gorm:"type:text;not null"`
-	Status        string `json:"status" gorm:"not null"`
+	RoomID      uint   `json:"room_id" gorm:"not null"`
+	UserID      uint   `json:"user_id" gorm:"not null"`
+	EquipmentID uint   `json:"equipment_id" gorm:"not null"`
+	Content     string `json:"content" gorm:"not null"`
+	Status      string `json:"status" gorm:"not null"`
 }
 
 func (c *CreateReportDto) Validate() error {

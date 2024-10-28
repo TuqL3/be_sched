@@ -1,12 +1,15 @@
 package user
 
-import "github.com/go-playground/validator/v10"
+import (
+	"github.com/go-playground/validator/v10"
+	"server/models"
+)
 
 type UserUpdateDto struct {
-	FullName string `json:"full_name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Phone    string `json:"phone" binding:"required"`
-	Role     string `json:"role" binding:"required" validate:"oneof=admin giang_vien truc_ban giam_doc"`
+	FullName string        `json:"full_name" binding:"required"`
+	Email    string        `json:"email" binding:"required,email"`
+	Phone    string        `json:"phone" binding:"required"`
+	Roles    []models.Role `json:"roles" gorm:"many2many:user_roles"`
 }
 
 func (u *UserUpdateDto) Validate() error {

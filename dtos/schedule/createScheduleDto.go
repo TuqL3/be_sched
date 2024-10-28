@@ -1,4 +1,4 @@
-package roomSchedule
+package schedule
 
 import (
 	"github.com/go-playground/validator/v10"

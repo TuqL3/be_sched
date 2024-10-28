@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"errors"
-	"server/dtos/roomSchedule"
+	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/models"
 	"time"
@@ -14,7 +14,7 @@ type RoomScheduleRepository struct {
 	DB *gorm.DB
 }
 
-func (r *RoomScheduleRepository) CreateRoomSchedule(createRoomScheduleDto *roomSchedule.CreateRoomScheduleDto) (*models.RoomSchedule, error) {
+func (r *RoomScheduleRepository) CreateRoomSchedule(createRoomScheduleDto *schedule.CreateRoomScheduleDto) (*models.RoomSchedule, error) {
 	if err := r.DB.Table("room_schedule").Create(createRoomScheduleDto).Error; err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (r *RoomScheduleRepository) CreateRoomSchedule(createRoomScheduleDto *roomS
 	return m, nil
 }
 
-func (r *RoomScheduleRepository) UpdateRoomSchedule(roomScheduleId uint, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
+func (r *RoomScheduleRepository) UpdateRoomSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
 	var existingRoomSchedule models.RoomSchedule
 	if err := r.DB.Table("room_schedule").Where("id = ?", roomScheduleId).First(&existingRoomSchedule).Error; err != nil {
 		return nil, err

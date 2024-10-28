@@ -1,7 +1,7 @@
 package services
 
 import (
-	"server/dtos/roomSchedule"
+	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/interface/Service"
 	"server/models"
@@ -11,11 +11,11 @@ type RoomSheduleService struct {
 	roomScheduleRepo Repository.RoomScheduleRepositoryInterface
 }
 
-func (r *RoomSheduleService) CreateRoomSchedule(createRoomScheduleDto *roomSchedule.CreateRoomScheduleDto) (*models.RoomSchedule, error) {
+func (r *RoomSheduleService) CreateRoomSchedule(createRoomScheduleDto *schedule.CreateRoomScheduleDto) (*models.RoomSchedule, error) {
 	return r.roomScheduleRepo.CreateRoomSchedule(createRoomScheduleDto)
 }
 
-func (r *RoomSheduleService) UpdateRoomSchedule(roomScheduleId uint, dto roomSchedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
+func (r *RoomSheduleService) UpdateRoomSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
 	return r.roomScheduleRepo.UpdateRoomSchedule(roomScheduleId, dto)
 }
 
