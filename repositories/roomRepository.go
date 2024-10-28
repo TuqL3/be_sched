@@ -16,7 +16,7 @@ type RoomRepository struct {
 
 func (r *RoomRepository) GetRoomById(roomId uint) (*models.Room, error) {
 	var room models.Room
-	if err := r.DB.Table("room").Where("id = ?", roomId).Preload("Room").First(&room).Error; err != nil {
+	if err := r.DB.Table("rooms").Where("id = ?", roomId).First(&room).Error; err != nil {
 		return nil, err
 	}
 	return &room, nil

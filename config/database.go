@@ -2,11 +2,12 @@ package config
 
 import (
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"os"
 	"server/models"
 	"time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
@@ -43,6 +44,7 @@ func PostgresConnection() {
 		&models.Report{},
 		&models.RoomSchedule{},
 		&models.AirCondition{},
+		&models.Category{},
 		&models.Computer{}); err != nil {
 		panic(err)
 	}

@@ -16,7 +16,7 @@ type ReportRepository struct {
 
 func (r *ReportRepository) GetReportById(reportId uint) (*models.Report, error) {
 	var report models.Report
-	if err := r.DB.Table("report").Where("id = ?", reportId).Preload("Room").First(&report).Error; err != nil {
+	if err := r.DB.Table("reports").Where("id = ?", reportId).Preload("Room").First(&report).Error; err != nil {
 		return nil, err
 	}
 	return &report, nil
@@ -73,7 +73,7 @@ func (r *ReportRepository) DeleteReport(reportId uint) error {
 
 func (r *ReportRepository) GetAllReports() ([]*models.Report, error) {
 	var reports []*models.Report
-	if err := r.DB.Find(&reports).Error; err != nil {
+	if err := r.DB.Preload("Room").Find(&reports).Error; err != nil {
 		return nil, err
 	}
 	return reports, nil

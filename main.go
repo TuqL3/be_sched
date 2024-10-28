@@ -1,14 +1,15 @@
 package main
 
 import (
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"log"
 	"server/config"
 	"server/controllers"
 	"server/repositories"
 	"server/routes"
 	"server/services"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -52,6 +53,10 @@ func main() {
 	tAndChService := services.NewTAndChService(tAndChRepository)
 	tAndChController := controllers.NewTAndChController(tAndChService)
 
+	categoryRepository := repositories.NewCategoryRepository(config.DB)
+	categoryService := services.NewCategoryService(categoryRepository)
+	categoryController := controllers.NewCategoryController(categoryService)
+
 	routes.UserRoute(router, userController)
 	routes.RoomRoute(router, roomController)
 	routes.ReportRoute(router, reportController)
@@ -59,6 +64,7 @@ func main() {
 	routes.ComputerRoute(router, computerController)
 	routes.AirConditionRoute(router, airConditionController)
 	routes.TAndChtRoute(router, tAndChController)
+	routes.CategoryRoute(router, categoryController)
 
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal("failed run app: ", err)
