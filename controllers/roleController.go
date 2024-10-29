@@ -1,28 +1,27 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/dtos/category"
+	"server/dtos/role"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
-type CategoryController struct {
-	categoryService Service.CategoryServiceInterface
+type RoleController struct {
+	roleService Service.RoleServiceInterface
 }
 
-func NewCategoryController(categoryService Service.CategoryServiceInterface) *CategoryController {
-	return &CategoryController{
-		categoryService: categoryService,
+func NewRoleController(roleService Service.RoleServiceInterface) *RoleController {
+	return &RoleController{
+		roleService: roleService,
 	}
 }
 
-func (e *CategoryController) CreateCategory(c *gin.Context) {
-	var categoryCreateDto category.CreateCategoryDto
-	if err := c.ShouldBind(&categoryCreateDto); err != nil {
+func (r *RoleController) CreateRole(c *gin.Context) {
+	var roleCreateDto role.CreateRoleDto
+	if err := c.ShouldBind(&roleCreateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -32,7 +31,7 @@ func (e *CategoryController) CreateCategory(c *gin.Context) {
 		return
 	}
 
-	if err := categoryCreateDto.Validate(); err != nil {
+	if err := roleCreateDto.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -41,39 +40,39 @@ func (e *CategoryController) CreateCategory(c *gin.Context) {
 		})
 		return
 	}
-	category, err := e.categoryService.CreateCategory(&categoryCreateDto)
+	role, err := r.roleService.CreateRole(&roleCreateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Create category failed",
+			Message: "Create role failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
 		return
 	}
-	c.JSON(http.StatusOK, &utils.Response{
-		Status:  http.StatusOK,
-		Message: "Create category successfully",
-		Data:    category,
+	c.JSON(http.StatusCreated, &utils.Response{
+		Status:  http.StatusCreated,
+		Message: "Create role successfully",
+		Data:    role,
 		Error:   "",
 	})
 }
 
-func (e *CategoryController) DeleteCategory(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("categoryId"))
+func (r *RoleController) DeleteRole(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("roleId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid Category Id",
+			Message: "Invalid input data",
 			Data:    nil,
 			Error:   err.Error(),
 		})
 		return
 	}
-	if err := e.categoryService.DeleteCategory(uint(id)); err != nil {
+	if err := r.roleService.DeleteRole(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Delete category failed",
+			Message: "Delete role failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -81,17 +80,18 @@ func (e *CategoryController) DeleteCategory(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Delete category successfully",
+		Message: "Delete role successfully",
 		Data:    nil,
 		Error:   "",
 	})
 	return
 }
-func (e *CategoryController) UpdateCategory(c *gin.Context) {
-	var categoryUpdateDto category.UpdateCategoryDto
-	id, err := strconv.Atoi(c.Param("categoryId"))
 
-	if err := c.ShouldBind(&categoryUpdateDto); err != nil {
+func (r *RoleController) UpdateRole(c *gin.Context) {
+	var roleUpdateDto role.UpdateRoleDto
+	roleId, err := strconv.Atoi(c.Param("roleId"))
+
+	if err := c.ShouldBind(&roleUpdateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -100,12 +100,11 @@ func (e *CategoryController) UpdateCategory(c *gin.Context) {
 		})
 		return
 	}
-
-	category, err := e.categoryService.UpdateCategory(uint(id), categoryUpdateDto)
+	role, err := r.roleService.UpdateRole(uint(roleId), roleUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Update category failed",
+			Message: "Update role failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -113,18 +112,18 @@ func (e *CategoryController) UpdateCategory(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Update category successfully",
-		Data:    category,
+		Message: "Update role successfully",
+		Data:    role,
 		Error:   "",
 	})
 }
 
-func (r *CategoryController) GetAllCategory(c *gin.Context) {
-	category, err := r.categoryService.GetAllCategorys()
+func (r *RoleController) GetAllRole(c *gin.Context) {
+	roles, err := r.roleService.GetAllRoles()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Get category failed",
+			Message: "Get all roles failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -132,15 +131,15 @@ func (r *CategoryController) GetAllCategory(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Get category successfully",
-		Data:    category,
+		Message: "Get all roles successfully",
+		Data:    roles,
 		Error:   "",
 	})
 	return
 }
 
-func (r *CategoryController) GetCategoryById(c *gin.Context) {
-	categoryId, err := strconv.ParseInt(c.Param("categoryId"), 10, 64)
+func (r *RoleController) GetRoleById(c *gin.Context) {
+	roleId, err := strconv.ParseInt(c.Param("roleId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -150,11 +149,11 @@ func (r *CategoryController) GetCategoryById(c *gin.Context) {
 		})
 		return
 	}
-	category, err := r.categoryService.GetCategoryById(uint(categoryId))
+	role, err := r.roleService.GetRoleById(uint(roleId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Air condition get error",
+			Message: "Role get error",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -163,8 +162,8 @@ func (r *CategoryController) GetCategoryById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Air condition get successfully",
-		Data:    category,
+		Message: "Role get successfully",
+		Data:    role,
 		Error:   "",
 	})
 

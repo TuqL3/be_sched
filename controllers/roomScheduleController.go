@@ -84,7 +84,7 @@ func (r *RoomScheduleController) CreateRoomSchedule(c *gin.Context) {
 		return
 	}
 
-	roomSchedule, err := r.roomScheduleService.CreateRoomSchedule(&roomScheduleDto)
+	roomSchedule, err := r.roomScheduleService.CreateSchedule(&roomScheduleDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -114,7 +114,7 @@ func (r *RoomScheduleController) DeleteRoomSchedule(c *gin.Context) {
 		return
 	}
 
-	if err := r.roomScheduleService.DeleteRoomSchedule(uint(id)); err != nil {
+	if err := r.roomScheduleService.DeleteSchedule(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
 			Message: "Server Error",
@@ -164,7 +164,7 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 		})
 		return
 	}
-	roomSchedule, err := r.roomScheduleService.UpdateRoomSchedule(uint(roomScheduleId), roomScheduleDto)
+	roomSchedule, err := r.roomScheduleService.UpdateSchedule(uint(roomScheduleId), roomScheduleDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -184,7 +184,7 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 }
 
 func (r *RoomScheduleController) GetAllRoomSchedule(c *gin.Context) {
-	roomSchedule, err := r.roomScheduleService.GetAllRoomSchedules()
+	roomSchedule, err := r.roomScheduleService.GetAllSchedules()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

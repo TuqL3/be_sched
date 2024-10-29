@@ -3,23 +3,25 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/dtos/tandch"
+	"server/dtos/permission"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
 )
 
-type TAndChController struct {
-	tAndChService Service.TAndChServiceInterface
+type PermissionController struct {
+	permissionService Service.PermissionServiceInterface
 }
 
-func NewTAndChController(tAndChService Service.TAndChServiceInterface) *TAndChController {
-	return &TAndChController{tAndChService: tAndChService}
+func NewPermissionController(permissionService Service.PermissionServiceInterface) *PermissionController {
+	return &PermissionController{
+		permissionService: permissionService,
+	}
 }
 
-func (e *TAndChController) CreateTAndCh(c *gin.Context) {
-	var tAndChCreateDto tandch.CreateTandChDto
-	if err := c.ShouldBind(&tAndChCreateDto); err != nil {
+func (r *PermissionController) CreatePermission(c *gin.Context) {
+	var permissionCreateDto permission.CreatePermissionDto
+	if err := c.ShouldBind(&permissionCreateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -29,7 +31,7 @@ func (e *TAndChController) CreateTAndCh(c *gin.Context) {
 		return
 	}
 
-	if err := tAndChCreateDto.Validate(); err != nil {
+	if err := permissionCreateDto.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -38,39 +40,39 @@ func (e *TAndChController) CreateTAndCh(c *gin.Context) {
 		})
 		return
 	}
-	tAndCh, err := e.tAndChService.CreateTAndCh(&tAndChCreateDto)
+	permission, err := r.permissionService.CreatePermission(&permissionCreateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Create tAndCh failed",
+			Message: "Create permission failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
 		return
 	}
-	c.JSON(http.StatusOK, &utils.Response{
-		Status:  http.StatusOK,
-		Message: "Create tAndCh successfully",
-		Data:    tAndCh,
+	c.JSON(http.StatusCreated, &utils.Response{
+		Status:  http.StatusCreated,
+		Message: "Create permission successfully",
+		Data:    permission,
 		Error:   "",
 	})
 }
 
-func (e *TAndChController) DeleteTAndCh(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("tAndChId"))
+func (r *PermissionController) DeletePermission(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("permissionId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid TAndCh Id",
+			Message: "Invalid input data",
 			Data:    nil,
 			Error:   err.Error(),
 		})
 		return
 	}
-	if err := e.tAndChService.DeleteTAndCh(uint(id)); err != nil {
+	if err := r.permissionService.DeletePermission(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Delete tAndCh failed",
+			Message: "Delete permission failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -78,17 +80,18 @@ func (e *TAndChController) DeleteTAndCh(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Delete tAndCh successfully",
+		Message: "Delete permission successfully",
 		Data:    nil,
 		Error:   "",
 	})
 	return
 }
-func (e *TAndChController) UpdateTAndCh(c *gin.Context) {
-	var tAndChUpdateDto tandch.UpdateTandChDto
-	id, err := strconv.Atoi(c.Param("tAndChId"))
 
-	if err := c.ShouldBind(&tAndChUpdateDto); err != nil {
+func (r *PermissionController) UpdatePermission(c *gin.Context) {
+	var permissionUpdateDto permission.UpdatePermissionDto
+	permissionId, err := strconv.Atoi(c.Param("permissionId"))
+
+	if err := c.ShouldBind(&permissionUpdateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -97,12 +100,11 @@ func (e *TAndChController) UpdateTAndCh(c *gin.Context) {
 		})
 		return
 	}
-
-	tAndCh, err := e.tAndChService.UpdateTAndCh(uint(id), tAndChUpdateDto)
+	permission, err := r.permissionService.UpdatePermission(uint(permissionId), permissionUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Update tAndCh failed",
+			Message: "Update permission failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -110,18 +112,18 @@ func (e *TAndChController) UpdateTAndCh(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Update tAndCh successfully",
-		Data:    tAndCh,
+		Message: "Update permission successfully",
+		Data:    permission,
 		Error:   "",
 	})
 }
 
-func (r *TAndChController) GetAllTAndCh(c *gin.Context) {
-	tAndCh, err := r.tAndChService.GetAllTAndChs()
+func (r *PermissionController) GetAllPermission(c *gin.Context) {
+	permissions, err := r.permissionService.GetAllPermissions()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Get tAndCh failed",
+			Message: "Get all permissions failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -129,15 +131,15 @@ func (r *TAndChController) GetAllTAndCh(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Get tAndCh successfully",
-		Data:    tAndCh,
+		Message: "Get all permissions successfully",
+		Data:    permissions,
 		Error:   "",
 	})
 	return
 }
 
-func (r *TAndChController) GetTAndChById(c *gin.Context) {
-	tandchId, err := strconv.ParseInt(c.Param("tAndChId"), 10, 64)
+func (r *PermissionController) GetPermissionById(c *gin.Context) {
+	permissionId, err := strconv.ParseInt(c.Param("permissionId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -147,11 +149,11 @@ func (r *TAndChController) GetTAndChById(c *gin.Context) {
 		})
 		return
 	}
-	tandch, err := r.tAndChService.GetTAndChById(uint(tandchId))
+	permission, err := r.permissionService.GetPermissionById(uint(permissionId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Table and chair get error",
+			Message: "Permission get error",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -160,8 +162,8 @@ func (r *TAndChController) GetTAndChById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Table and chair get successfully",
-		Data:    tandch,
+		Message: "Permission get successfully",
+		Data:    permission,
 		Error:   "",
 	})
 

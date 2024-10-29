@@ -1,26 +1,25 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/dtos/computer"
+	"server/dtos/equipment"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
-type ComputerController struct {
-	computerService Service.ComputerServiceInterface
+type EquipmentController struct {
+	equipmentService Service.EquipmentServiceInterface
 }
 
-func NewComputerController(computerService Service.ComputerServiceInterface) *ComputerController {
-	return &ComputerController{computerService: computerService}
+func NewEquipmentController(equipmentService Service.EquipmentServiceInterface) *EquipmentController {
+	return &EquipmentController{equipmentService: equipmentService}
 }
 
-func (e *ComputerController) CreateComputer(c *gin.Context) {
-	var computerCreateDto computer.CreateComputerDto
-	if err := c.ShouldBind(&computerCreateDto); err != nil {
+func (e *EquipmentController) CreateEquipment(c *gin.Context) {
+	var equipmentCreateDto equipment.CreateEquipmentDto
+	if err := c.ShouldBind(&equipmentCreateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -30,7 +29,7 @@ func (e *ComputerController) CreateComputer(c *gin.Context) {
 		return
 	}
 
-	if err := computerCreateDto.Validate(); err != nil {
+	if err := equipmentCreateDto.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -39,11 +38,11 @@ func (e *ComputerController) CreateComputer(c *gin.Context) {
 		})
 		return
 	}
-	computer, err := e.computerService.CreateCompute(&computerCreateDto)
+	equipment, err := e.equipmentService.CreateEquipment(&equipmentCreateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Create computer failed",
+			Message: "Create equipment failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -51,27 +50,27 @@ func (e *ComputerController) CreateComputer(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Create computer successfully",
-		Data:    computer,
+		Message: "Create equipment successfully",
+		Data:    equipment,
 		Error:   "",
 	})
 }
 
-func (e *ComputerController) DeleteComputer(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("computerId"))
+func (e *EquipmentController) DeleteEquipment(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("equipmentId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid Computer Id",
+			Message: "Invalid Equipment Id",
 			Data:    nil,
 			Error:   err.Error(),
 		})
 		return
 	}
-	if err := e.computerService.DeleteCompute(uint(id)); err != nil {
+	if err := e.equipmentService.DeleteEquipment(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Delete computer failed",
+			Message: "Delete equipment failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -79,17 +78,17 @@ func (e *ComputerController) DeleteComputer(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Delete computer successfully",
+		Message: "Delete equipment successfully",
 		Data:    nil,
 		Error:   "",
 	})
 	return
 }
-func (e *ComputerController) UpdateComputer(c *gin.Context) {
-	var computerUpdateDto computer.UpdateComputerDto
-	id, err := strconv.Atoi(c.Param("computerId"))
+func (e *EquipmentController) UpdateEquipment(c *gin.Context) {
+	var equipmentUpdateDto equipment.UpdateEquipmentDto
+	id, err := strconv.Atoi(c.Param("equipmentId"))
 
-	if err := c.ShouldBind(&computerUpdateDto); err != nil {
+	if err := c.ShouldBind(&equipmentUpdateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -99,11 +98,11 @@ func (e *ComputerController) UpdateComputer(c *gin.Context) {
 		return
 	}
 
-	computer, err := e.computerService.UpdateCompute(uint(id), computerUpdateDto)
+	equipment, err := e.equipmentService.UpdateEquipment(uint(id), equipmentUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Update computer failed",
+			Message: "Update equipment failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -111,18 +110,18 @@ func (e *ComputerController) UpdateComputer(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Update computer successfully",
-		Data:    computer,
+		Message: "Update equipment successfully",
+		Data:    equipment,
 		Error:   "",
 	})
 }
 
-func (r *ComputerController) GetAllComputer(c *gin.Context) {
-	computer, err := r.computerService.GetAllComputes()
+func (r *EquipmentController) GetAllEquipment(c *gin.Context) {
+	equipment, err := r.equipmentService.GetAllEquipments()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Get computer failed",
+			Message: "Get equipment failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -130,15 +129,15 @@ func (r *ComputerController) GetAllComputer(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Get computer successfully",
-		Data:    computer,
+		Message: "Get equipment successfully",
+		Data:    equipment,
 		Error:   "",
 	})
 	return
 }
 
-func (r *ComputerController) GetComputerById(c *gin.Context) {
-	computerId, err := strconv.ParseInt(c.Param("computerId"), 10, 64)
+func (r *EquipmentController) GetEquipmentById(c *gin.Context) {
+	equipmentId, err := strconv.ParseInt(c.Param("equipmentId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -148,11 +147,11 @@ func (r *ComputerController) GetComputerById(c *gin.Context) {
 		})
 		return
 	}
-	computer, err := r.computerService.GetComputerById(uint(computerId))
+	equipment, err := r.equipmentService.GetEquipmentById(uint(equipmentId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Computer get error",
+			Message: "Air condition get error",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -161,8 +160,8 @@ func (r *ComputerController) GetComputerById(c *gin.Context) {
 
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Computer get successfully",
-		Data:    computer,
+		Message: "Air condition get successfully",
+		Data:    equipment,
 		Error:   "",
 	})
 

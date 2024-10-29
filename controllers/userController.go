@@ -26,9 +26,13 @@ func NewUserController(userService Service.UserServiceInterface) *UserController
 }
 
 func (u *UserController) GetProfile(c *gin.Context) {
-	user, _ := c.Get("user")
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		return
+	}
 	claims := user.(jwt.MapClaims)
-	c.JSON(200, gin.H{"user": claims})
+	c.JSON(http.StatusOK, gin.H{"user": claims})
 }
 
 func (u *UserController) Register(c *gin.Context) {
@@ -99,9 +103,9 @@ func (u *UserController) Login(c *gin.Context) {
 
 	user, err := u.userService.FindUserByUsername(userLoginDto.Username)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, &utils.Response{
-			Status:  http.StatusInternalServerError,
-			Message: "User login error",
+		c.JSON(http.StatusNotFound, &utils.Response{
+			Status:  http.StatusNotFound,
+			Message: "User not found",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -111,13 +115,14 @@ func (u *UserController) Login(c *gin.Context) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userLoginDto.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, &utils.Response{
 			Status:  http.StatusUnauthorized,
-			Message: "User login error",
+			Message: "Invalid credentials",
 			Data:    nil,
-			Error:   err.Error(),
+			Error:   "Password mismatch",
 		})
 		return
 	}
-	token, err := generateJWT(uint(user.ID), user.Role)
+
+	token, err := generateJWT(uint(user.ID), user.Roles)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -144,18 +149,29 @@ func (u *UserController) Login(c *gin.Context) {
 	})
 }
 
-func generateJWT(id uint, role models.Role) (string, error) {
-	claims := jwt.MapClaims{
-		"id":   id,
-		"role": role,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+func generateJWT(userID uint, roles []models.Role) (string, error) {
+	var roleNames []string
+	var permissionNames []string
+	for _, role := range roles {
+		roleNames = append(roleNames, role.RoleName)
+		for _, permission := range role.Permissions {
+			permissionNames = append(permissionNames, permission.PermissionName)
+		}
 	}
+
+	claims := jwt.MapClaims{
+		"id":          userID,
+		"roles":       roleNames,
+		"permissions": permissionNames,
+		"exp":         time.Now().Add(time.Hour * 24).Unix(),
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtKey)
 }
 
 func (u *UserController) UpdateUser(c *gin.Context) {
-	var userUpdateDto user.UserUpdateDto
+	var userUpdateDto user.UpdateUserDto
 	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
 
 	if err := c.ShouldBind(&userUpdateDto); err != nil {

@@ -15,5 +15,5 @@ type EquipmentType struct {
 }
 
 func (*EquipmentType) TableName() string {
-	return "equipmenttype"
+	return "equipmentType"
 }

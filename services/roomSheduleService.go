@@ -7,28 +7,28 @@ import (
 	"server/models"
 )
 
-type RoomSheduleService struct {
-	roomScheduleRepo Repository.RoomScheduleRepositoryInterface
+type ScheduleService struct {
+	scheduleRepo Repository.RoomScheduleRepositoryInterface
 }
 
-func (r *RoomSheduleService) CreateRoomSchedule(createRoomScheduleDto *schedule.CreateRoomScheduleDto) (*models.RoomSchedule, error) {
-	return r.roomScheduleRepo.CreateRoomSchedule(createRoomScheduleDto)
+func (r *ScheduleService) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
+	return r.scheduleRepo.CreateSchedule(createScheduleDto)
 }
 
-func (r *RoomSheduleService) UpdateRoomSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
-	return r.roomScheduleRepo.UpdateRoomSchedule(roomScheduleId, dto)
+func (r *ScheduleService) UpdateSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.Schedule, error) {
+	return r.scheduleRepo.UpdateSchedule(roomScheduleId, dto)
 }
 
-func (r *RoomSheduleService) DeleteRoomSchedule(roomScheduleId uint) error {
-	return r.roomScheduleRepo.DeleteRoomSchedule(roomScheduleId)
+func (r *ScheduleService) DeleteSchedule(roomScheduleId uint) error {
+	return r.scheduleRepo.DeleteSchedule(roomScheduleId)
 }
 
-func (r *RoomSheduleService) GetAllRoomSchedules() ([]*models.RoomSchedule, error) {
-	return r.roomScheduleRepo.GetAllRoomSchedules()
+func (r *ScheduleService) GetAllSchedules() ([]*models.Schedule, error) {
+	return r.scheduleRepo.GetAllSchedules()
 }
 
-func NewRoomSheduleService(roomScheduleRepository Repository.RoomScheduleRepositoryInterface) Service.RoomScheduleServiceInterface {
-	return &RoomSheduleService{
-		roomScheduleRepo: roomScheduleRepository,
+func NewSheduleService(sheduleRepository Repository.RoomScheduleRepositoryInterface) Service.RoomScheduleServiceInterface {
+	return &ScheduleService{
+		scheduleRepo: sheduleRepository,
 	}
 }

@@ -5,55 +5,55 @@ import (
 	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/models"
+	"server/utils"
 	"time"
 
 	"gorm.io/gorm"
 )
 
-type RoomScheduleRepository struct {
+type ScheduleRepository struct {
 	DB *gorm.DB
 }
 
-func (r *RoomScheduleRepository) CreateRoomSchedule(createRoomScheduleDto *schedule.CreateRoomScheduleDto) (*models.RoomSchedule, error) {
-	if err := r.DB.Table("room_schedule").Create(createRoomScheduleDto).Error; err != nil {
+func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
+	if err := r.DB.Table("schedule").Create(createScheduleDto).Error; err != nil {
 		return nil, err
 	}
 
-	m := &models.RoomSchedule{
-		UserID:    createRoomScheduleDto.UserID,
-		RoomID:    createRoomScheduleDto.RoomID,
-		StartTime: createRoomScheduleDto.StartTime,
-		EndTime:   createRoomScheduleDto.EndTime,
-		Status:    models.ScheduleStatus(createRoomScheduleDto.Status),
-		Title:     createRoomScheduleDto.Title,
+	m := &models.Schedule{
+		UserID:    createScheduleDto.UserID,
+		RoomID:    createScheduleDto.RoomID,
+		StartTime: createScheduleDto.StartTime,
+		EndTime:   createScheduleDto.EndTime,
+		Status:    utils.ScheduleStatus(createScheduleDto.Status),
 	}
 	return m, nil
 }
 
-func (r *RoomScheduleRepository) UpdateRoomSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.RoomSchedule, error) {
-	var existingRoomSchedule models.RoomSchedule
-	if err := r.DB.Table("room_schedule").Where("id = ?", roomScheduleId).First(&existingRoomSchedule).Error; err != nil {
+func (r *ScheduleRepository) UpdateSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.Schedule, error) {
+	var existingSchedule models.Schedule
+	if err := r.DB.Table("schedule").Where("id = ?", roomScheduleId).First(&existingSchedule).Error; err != nil {
 		return nil, err
 	}
 	updates := map[string]interface{}{
-		"status":     models.ScheduleStatus(dto.Status),
+		"status":     utils.ScheduleStatus(dto.Status),
 		"room_id":    dto.RoomID,
 		"start_time": dto.StartTime,
 		"end_time":   dto.EndTime,
 		"user_id":    dto.UserID,
 	}
 
-	if err := r.DB.Table("room_schedule").Where("id = ?", roomScheduleId).Updates(updates).Error; err != nil {
+	if err := r.DB.Table("schedule").Where("id = ?", roomScheduleId).Updates(updates).Error; err != nil {
 		return nil, err
 	}
-	if err := r.DB.First(&existingRoomSchedule, roomScheduleId).Error; err != nil {
+	if err := r.DB.First(&existingSchedule, roomScheduleId).Error; err != nil {
 		return nil, err
 	}
-	return &existingRoomSchedule, nil
+	return &existingSchedule, nil
 }
 
-func (r *RoomScheduleRepository) DeleteRoomSchedule(roomScheduleId uint) error {
-	result := r.DB.Table("room_schedule").Where("id = ?", roomScheduleId).Update("deleted_at", time.Now())
+func (r *ScheduleRepository) DeleteSchedule(roomScheduleId uint) error {
+	result := r.DB.Table("schedule").Where("id = ?", roomScheduleId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
@@ -63,16 +63,16 @@ func (r *RoomScheduleRepository) DeleteRoomSchedule(roomScheduleId uint) error {
 	return nil
 }
 
-func (r *RoomScheduleRepository) GetAllRoomSchedules() ([]*models.RoomSchedule, error) {
-	var roomSchedules []*models.RoomSchedule
-	if err := r.DB.Table("room_schedule").Find(&roomSchedules).Error; err != nil {
+func (r *ScheduleRepository) GetAllSchedules() ([]*models.Schedule, error) {
+	var roomSchedules []*models.Schedule
+	if err := r.DB.Table("schedule").Find(&roomSchedules).Error; err != nil {
 		return nil, err
 	}
 	return roomSchedules, nil
 }
 
-func NewRoomScheduleRepository(db *gorm.DB) Repository.RoomScheduleRepositoryInterface {
-	return &RoomScheduleRepository{
+func NewScheduleRepository(db *gorm.DB) Repository.RoomScheduleRepositoryInterface {
+	return &ScheduleRepository{
 		DB: db,
 	}
 }

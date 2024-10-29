@@ -1,25 +1,28 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/dtos/airCondition"
+	"server/dtos/equipmentType"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
-type AirConditionController struct {
-	airConditionService Service.AirConditionServiceInterface
+type EquipmentTypeController struct {
+	EquipmentTypeService Service.EquipmentTypeServiceInterface
 }
 
-func NewAirConditionController(airConditionService Service.AirConditionServiceInterface) *AirConditionController {
-	return &AirConditionController{airConditionService: airConditionService}
+func NewEquipmentTypeController(EquipmentTypeService Service.EquipmentTypeServiceInterface) *EquipmentTypeController {
+	return &EquipmentTypeController{
+		EquipmentTypeService: EquipmentTypeService,
+	}
 }
 
-func (e *AirConditionController) CreateAirCondition(c *gin.Context) {
-	var airConditionCreateDto airCondition.CreateAirConditionDto
-	if err := c.ShouldBind(&airConditionCreateDto); err != nil {
+func (e *EquipmentTypeController) CreateEquipmentType(c *gin.Context) {
+	var EquipmentTypeCreateDto equipmentType.CreateEquipmentTypeDto
+	if err := c.ShouldBind(&EquipmentTypeCreateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -29,7 +32,7 @@ func (e *AirConditionController) CreateAirCondition(c *gin.Context) {
 		return
 	}
 
-	if err := airConditionCreateDto.Validate(); err != nil {
+	if err := EquipmentTypeCreateDto.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -38,11 +41,11 @@ func (e *AirConditionController) CreateAirCondition(c *gin.Context) {
 		})
 		return
 	}
-	airCondition, err := e.airConditionService.CreateAirCondition(&airConditionCreateDto)
+	EquipmentType, err := e.EquipmentTypeService.CreateEquipmentType(&EquipmentTypeCreateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Create airCondition failed",
+			Message: "Create EquipmentType failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -50,27 +53,27 @@ func (e *AirConditionController) CreateAirCondition(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Create airCondition successfully",
-		Data:    airCondition,
+		Message: "Create EquipmentType successfully",
+		Data:    EquipmentType,
 		Error:   "",
 	})
 }
 
-func (e *AirConditionController) DeleteAirCondition(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("airConditionId"))
+func (e *EquipmentTypeController) DeleteEquipmentType(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("EquipmentTypeId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
-			Message: "Invalid AirCondition Id",
+			Message: "Invalid EquipmentType Id",
 			Data:    nil,
 			Error:   err.Error(),
 		})
 		return
 	}
-	if err := e.airConditionService.DeleteAirCondition(uint(id)); err != nil {
+	if err := e.EquipmentTypeService.DeleteEquipmentType(uint(id)); err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Delete airCondition failed",
+			Message: "Delete EquipmentType failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -78,17 +81,17 @@ func (e *AirConditionController) DeleteAirCondition(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Delete airCondition successfully",
+		Message: "Delete EquipmentType successfully",
 		Data:    nil,
 		Error:   "",
 	})
 	return
 }
-func (e *AirConditionController) UpdateAirCondition(c *gin.Context) {
-	var airConditionUpdateDto airCondition.UpdateAirConditionDto
-	id, err := strconv.Atoi(c.Param("airConditionId"))
+func (e *EquipmentTypeController) UpdateEquipmentType(c *gin.Context) {
+	var EquipmentTypeUpdateDto equipmentType.UpdateEquipmentTypeDto
+	id, err := strconv.Atoi(c.Param("EquipmentTypeId"))
 
-	if err := c.ShouldBind(&airConditionUpdateDto); err != nil {
+	if err := c.ShouldBind(&EquipmentTypeUpdateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
 			Message: "Invalid input data",
@@ -98,11 +101,11 @@ func (e *AirConditionController) UpdateAirCondition(c *gin.Context) {
 		return
 	}
 
-	airCondition, err := e.airConditionService.UpdateAirCondition(uint(id), airConditionUpdateDto)
+	EquipmentType, err := e.EquipmentTypeService.UpdateEquipmentType(uint(id), EquipmentTypeUpdateDto)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Update airCondition failed",
+			Message: "Update EquipmentType failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -110,18 +113,18 @@ func (e *AirConditionController) UpdateAirCondition(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Update airCondition successfully",
-		Data:    airCondition,
+		Message: "Update EquipmentType successfully",
+		Data:    EquipmentType,
 		Error:   "",
 	})
 }
 
-func (r *AirConditionController) GetAllAirCondition(c *gin.Context) {
-	airCondition, err := r.airConditionService.GetAllAirConditions()
+func (r *EquipmentTypeController) GetAllEquipmentType(c *gin.Context) {
+	EquipmentType, err := r.EquipmentTypeService.GetAllEquipmentTypes()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
-			Message: "Get airCondition failed",
+			Message: "Get EquipmentType failed",
 			Data:    nil,
 			Error:   err.Error(),
 		})
@@ -129,15 +132,15 @@ func (r *AirConditionController) GetAllAirCondition(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
-		Message: "Get airCondition successfully",
-		Data:    airCondition,
+		Message: "Get EquipmentType successfully",
+		Data:    EquipmentType,
 		Error:   "",
 	})
 	return
 }
 
-func (r *AirConditionController) GetAirConditionById(c *gin.Context) {
-	airConditionId, err := strconv.ParseInt(c.Param("airConditionId"), 10, 64)
+func (r *EquipmentTypeController) GetEquipmentTypeById(c *gin.Context) {
+	EquipmentTypeId, err := strconv.ParseInt(c.Param("EquipmentTypeId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -147,7 +150,7 @@ func (r *AirConditionController) GetAirConditionById(c *gin.Context) {
 		})
 		return
 	}
-	airCondition, err := r.airConditionService.GetAirConditionById(uint(airConditionId))
+	EquipmentType, err := r.EquipmentTypeService.GetEquipmentTypeById(uint(EquipmentTypeId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -161,7 +164,7 @@ func (r *AirConditionController) GetAirConditionById(c *gin.Context) {
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
 		Message: "Air condition get successfully",
-		Data:    airCondition,
+		Data:    EquipmentType,
 		Error:   "",
 	})
 

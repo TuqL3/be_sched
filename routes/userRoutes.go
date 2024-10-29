@@ -15,11 +15,10 @@ func UserRoute(route *gin.Engine, controller *controllers.UserController) {
 
 	userRouteMiddleware := route.Group("/api/v1/user")
 	{
-		userRouteMiddleware.Use(middleware.AuthMiddleware())
-		userRouteMiddleware.Use(middleware.AdminOnly())
 
 		userRouteMiddleware.PUT("/update/:userId", controller.UpdateUser)
 		userRouteMiddleware.DELETE("/delete/:userId", controller.DeleteUser)
+		userRouteMiddleware.GET("/profile", middleware.RolePermissionMiddleware([]string{"admin", "giangvien"}, []string{"view", "update"}), controller.GetAllUsers)
 		userRouteMiddleware.GET("/:userId", controller.GetUserById)
 		userRouteMiddleware.GET("", controller.GetAllUsers)
 	}

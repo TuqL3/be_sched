@@ -5,6 +5,7 @@ import (
 	"server/dtos/room"
 	"server/interface/Repository"
 	"server/models"
+	"server/utils"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,21 +17,20 @@ type RoomRepository struct {
 
 func (r *RoomRepository) GetRoomById(roomId uint) (*models.Room, error) {
 	var room models.Room
-	if err := r.DB.Table("rooms").Where("id = ?", roomId).First(&room).Error; err != nil {
+	if err := r.DB.Table("room").Where("id = ?", roomId).First(&room).Error; err != nil {
 		return nil, err
 	}
 	return &room, nil
 }
 
 func (r *RoomRepository) CreateRoom(createRoomDto *room.CreateRoomDto) (*models.Room, error) {
-	if err := r.DB.Table("rooms").Create(createRoomDto).Error; err != nil {
+	if err := r.DB.Table("room").Create(createRoomDto).Error; err != nil {
 		return nil, err
 	}
 
 	m := &models.Room{
-		RoomName: createRoomDto.RoomName,
-		Capacity: createRoomDto.Capacity,
-		Status:   models.RoomStatus(createRoomDto.Status),
+		Name:   createRoomDto.Name,
+		Status: utils.RoomStatus(createRoomDto.Status),
 	}
 
 	return m, nil
@@ -38,15 +38,14 @@ func (r *RoomRepository) CreateRoom(createRoomDto *room.CreateRoomDto) (*models.
 
 func (r *RoomRepository) UpdateRoom(roomId uint, dto room.UpdateRoomDto) (*models.Room, error) {
 	var existingRoom models.Room
-	if err := r.DB.Table("rooms").Where("id = ?", roomId).First(&existingRoom).Error; err != nil {
+	if err := r.DB.Table("room").Where("id = ?", roomId).First(&existingRoom).Error; err != nil {
 		return nil, err
 	}
 	updates := map[string]interface{}{
-		"room_name": dto.RoomName,
-		"capacity":  dto.Capacity,
-		"status":    dto.Status,
+		"name":   dto.Name,
+		"status": dto.Status,
 	}
-	if err := r.DB.Table("rooms").Where("id = ?", roomId).Updates(updates).Error; err != nil {
+	if err := r.DB.Table("room").Where("id = ?", roomId).Updates(updates).Error; err != nil {
 		return nil, err
 	}
 	if err := r.DB.First(&existingRoom, roomId).Error; err != nil {
@@ -56,7 +55,7 @@ func (r *RoomRepository) UpdateRoom(roomId uint, dto room.UpdateRoomDto) (*model
 }
 
 func (r *RoomRepository) DeleteRoom(roomId uint) error {
-	result := r.DB.Table("rooms").Where("id = ?", roomId).Update("deleted_at", time.Now())
+	result := r.DB.Table("room").Where("id = ?", roomId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
@@ -67,11 +66,11 @@ func (r *RoomRepository) DeleteRoom(roomId uint) error {
 }
 
 func (r *RoomRepository) GetAllRooms() ([]*models.Room, error) {
-	var rooms []*models.Room
-	if err := r.DB.Find(&rooms).Error; err != nil {
+	var room []*models.Room
+	if err := r.DB.Find(&room).Error; err != nil {
 		return nil, err
 	}
-	return rooms, nil
+	return room, nil
 }
 
 func NewRoomRepository(db *gorm.DB) Repository.RoomRepositoryInterface {

@@ -23,7 +23,7 @@ func (u *UserService) DeleteUser(userId uint) error {
 	return u.userRepository.DeleteUser(userId)
 }
 
-func (u *UserService) UpdateUser(userId uint, dto user.UserUpdateDto) (*models.User, error) {
+func (u *UserService) UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error) {
 	return u.userRepository.UpdateUser(userId, dto)
 }
 

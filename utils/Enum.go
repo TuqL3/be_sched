@@ -21,7 +21,7 @@ type RoomStatus string
 const (
 	RoomAvailable        RoomStatus = "available"
 	RoomOccupied         RoomStatus = "occupied"
-	RoomUnderMaintenance RoomStatus = "under maintenance"
+	RoomUnderMaintenance RoomStatus = "maintenance"
 )
 
 type ScheduleStatus string

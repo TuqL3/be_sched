@@ -24,19 +24,19 @@ func (u *UserRepository) GetUserById(userId uint) (*models.User, error) {
 }
 
 func (u *UserRepository) GetAllUsers(fullName string) ([]*models.User, error) {
-	var users []*models.User
+	var user []*models.User
 	query := u.DB.Model(&models.User{})
 	if fullName != "" {
 		query = query.Where("full_name LIKE ?", "%"+fullName+"%")
 	}
-	if err := u.DB.Find(&users).Error; err != nil {
+	if err := u.DB.Find(&user).Error; err != nil {
 		return nil, err
 	}
-	return users, nil
+	return user, nil
 }
 
 func (u *UserRepository) DeleteUser(userId uint) error {
-	result := u.DB.Table("users").Where("id = ?", userId).Update("deleted_at", time.Now())
+	result := u.DB.Table("user").Where("id = ?", userId).Update("deleted_at", time.Now())
 	if result.Error != nil {
 		return result.Error
 	}
@@ -46,8 +46,9 @@ func (u *UserRepository) DeleteUser(userId uint) error {
 	return nil
 }
 
-func (u *UserRepository) UpdateUser(userId uint, dto user.UserUpdateDto) (*models.User, error) {
+func (u *UserRepository) UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error) {
 	var existingUser models.User
+
 	if err := u.DB.First(&existingUser, userId).Error; err != nil {
 		log.Printf("User not found: %v", err)
 		return nil, err
@@ -57,7 +58,6 @@ func (u *UserRepository) UpdateUser(userId uint, dto user.UserUpdateDto) (*model
 		"full_name": dto.FullName,
 		"email":     dto.Email,
 		"phone":     dto.Phone,
-		"role":      dto.Role,
 	}
 
 	if err := u.DB.Model(&existingUser).Updates(updates).Error; err != nil {
@@ -65,36 +65,90 @@ func (u *UserRepository) UpdateUser(userId uint, dto user.UserUpdateDto) (*model
 		return nil, err
 	}
 
-	if err := u.DB.First(&existingUser, userId).Error; err != nil {
+	if len(dto.Roles) > 0 {
+		var roles []models.Role
+		if err := u.DB.Table("role").Where("id IN ?", dto.Roles).Find(&roles).Error; err != nil {
+			log.Printf("Error retrieving roles: %v", err)
+			return nil, err
+		}
+		if err := u.DB.Model(&existingUser).Association("Roles").Replace(&roles); err != nil {
+			log.Printf("Error updating roles for user: %v", err)
+			return nil, err
+		}
+	}
+
+	if err := u.DB.Preload("Roles").First(&existingUser, userId).Error; err != nil {
 		log.Printf("Error retrieving updated user: %v", err)
 		return nil, err
 	}
+
 	return &existingUser, nil
 }
 
 func (u *UserRepository) FindUserByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := u.DB.Table("users").Where("username = ?", username).First(&user).Error
+	err := u.DB.Table("user").Where("username = ?", username).Preload("Roles").
+		Preload("Roles.Permissions").First(&user).Error
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
+//func (u *UserRepository) Register(userRegisterDto *user.UserRegister) (*models.User, error) {
+//	newUser := &models.User{
+//		Username: userRegisterDto.Username,
+//		Email:    userRegisterDto.Email,
+//		FullName: userRegisterDto.FullName,
+//		Phone:    userRegisterDto.Phone,
+//		Password: userRegisterDto.Password,
+//	}
+//
+//	if err := u.DB.Create(newUser).Error; err != nil {
+//		return nil, err
+//	}
+//
+//	if len(userRegisterDto.Roles) > 0 {
+//		var roles []models.Role
+//		if err := u.DB.Table("role").Where("id IN ?", userRegisterDto.Roles).Find(&roles).Error; err != nil {
+//			return nil, err
+//		}
+//
+//		if err := u.DB.Model(newUser).Association("Roles").Append(&roles); err != nil {
+//			return nil, err
+//		}
+//	}
+//
+//	if err := u.DB.Preload("Roles").First(newUser, newUser.ID).Error; err != nil {
+//		return nil, err
+//	}
+//	return newUser, nil
+//}
+
 func (u *UserRepository) Register(userRegisterDto *user.UserRegister) (*models.User, error) {
-	if err := u.DB.Table("users").Create(userRegisterDto).Error; err != nil {
+	var roles []models.Role
+	if len(userRegisterDto.Roles) > 0 {
+		if err := u.DB.Where("id IN ?", userRegisterDto.Roles).Find(&roles).Error; err != nil {
+			log.Printf("Roles not found: %v", err)
+			return nil, err
+		}
+	}
+
+	newUser := models.User{
+		Username: userRegisterDto.Username,
+		Password: userRegisterDto.Password,
+		FullName: userRegisterDto.FullName,
+		Email:    userRegisterDto.Email,
+		Phone:    userRegisterDto.Phone,
+		Roles:    roles,
+	}
+
+	if err := u.DB.Create(&newUser).Error; err != nil {
+		log.Printf("Error creating user: %v", err)
 		return nil, err
 	}
 
-	m := &models.User{
-		Username: userRegisterDto.Username,
-		Email:    userRegisterDto.Email,
-		FullName: userRegisterDto.FullName,
-		Phone:    userRegisterDto.Phone,
-		Role:     models.Role(userRegisterDto.Role),
-	}
-
-	return m, nil
+	return &newUser, nil
 }
 
 func NewUserRepository(db *gorm.DB) Repository.UserRepositoryInterface {

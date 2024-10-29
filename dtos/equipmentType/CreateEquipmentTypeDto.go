@@ -1,4 +1,4 @@
-package equipmenttype
+package equipmentType
 
 import "github.com/go-playground/validator/v10"
 

@@ -39,13 +39,13 @@ func PostgresConnection() {
 
 	if err := db.AutoMigrate(
 		&models.User{},
-		&models.TandCh{},
 		&models.Room{},
 		&models.Report{},
-		&models.RoomSchedule{},
-		&models.AirCondition{},
-		&models.Category{},
-		&models.Computer{}); err != nil {
+		&models.EquipmentType{},
+		&models.Schedule{},
+		&models.Role{},
+		&models.Permission{},
+		&models.Equipment{}); err != nil {
 		panic(err)
 	}
 }
