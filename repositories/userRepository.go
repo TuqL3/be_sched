@@ -29,7 +29,7 @@ func (u *UserRepository) GetAllUsers(fullName string) ([]*models.User, error) {
 	if fullName != "" {
 		query = query.Where("full_name LIKE ?", "%"+fullName+"%")
 	}
-	if err := u.DB.Find(&user).Error; err != nil {
+	if err := u.DB.Preload("Roles").Find(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil

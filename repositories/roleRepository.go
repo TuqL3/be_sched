@@ -17,7 +17,7 @@ type RoleRepository struct {
 
 func (r *RoleRepository) GetRoleById(roleId uint) (*models.Role, error) {
 	var role models.Role
-	if err := r.DB.Table("role").Where("id = ?", roleId).First(&role).Error; err != nil {
+	if err := r.DB.Table("role").Where("id = ?", roleId).Preload("Permissions").First(&role).Error; err != nil {
 		return nil, err
 	}
 	return &role, nil
@@ -26,7 +26,7 @@ func (r *RoleRepository) GetRoleById(roleId uint) (*models.Role, error) {
 func (r *RoleRepository) CreateRole(dto *role.CreateRoleDto) (*models.Role, error) {
 	var permissions []models.Permission
 	if len(dto.Permissions) > 0 {
-		if err := r.DB.Where("id IN ?", dto.Permissions).Preload("Permissions").Find(&permissions).Error; err != nil {
+		if err := r.DB.Where("id IN ?", dto.Permissions).Find(&permissions).Error; err != nil {
 			log.Printf("Error finding permissions: %v", err)
 			return nil, err
 		}
@@ -61,7 +61,11 @@ func (r *RoleRepository) UpdateRole(roleID uint, dto role.UpdateRoleDto) (*model
 	}
 
 	existingRole.RoleName = dto.RoleName
-	existingRole.Permissions = newPermissions
+
+	if err := r.DB.Model(&existingRole).Association("Permissions").Replace(newPermissions); err != nil {
+		log.Printf("Error updating role permissions: %v", err)
+		return nil, err
+	}
 
 	if err := r.DB.Save(&existingRole).Error; err != nil {
 		log.Printf("Error updating role: %v", err)
@@ -83,11 +87,11 @@ func (r *RoleRepository) DeleteRole(roleId uint) error {
 }
 
 func (r *RoleRepository) GetAllRoles() ([]*models.Role, error) {
-	var role []*models.Role
-	if err := r.DB.Find(&role).Preload("Permissions").Error; err != nil {
+	var roles []*models.Role
+	if err := r.DB.Preload("Permissions").Find(&roles).Error; err != nil {
 		return nil, err
 	}
-	return role, nil
+	return roles, nil
 }
 
 func NewRoleRepository(db *gorm.DB) Repository.RoleRepositoryInterface {
