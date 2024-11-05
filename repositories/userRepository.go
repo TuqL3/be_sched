@@ -17,19 +17,26 @@ type UserRepository struct {
 
 func (u *UserRepository) GetUserById(userId uint) (*models.User, error) {
 	var user *models.User
-	if err := u.DB.First(&user, userId).Error; err != nil {
+	if err := u.DB.Preload("Roles").First(&user, userId).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-func (u *UserRepository) GetAllUsers(fullName string) ([]*models.User, error) {
+func (u *UserRepository) GetAllUsers(fullName, role string) ([]*models.User, error) {
 	var user []*models.User
-	query := u.DB.Model(&models.User{})
+	query := u.DB.Model(&models.User{}).Preload("Roles")
 	if fullName != "" {
 		query = query.Where("full_name LIKE ?", "%"+fullName+"%")
 	}
-	if err := u.DB.Preload("Roles").Find(&user).Error; err != nil {
+
+	if role != "" {
+		query = query.Joins("JOIN user_roles ON user_roles.user_id = \"user\".id").
+			Joins("JOIN role ON role.id = user_roles.role_id").
+			Where("role.role_name = ?", role)
+	}
+
+	if err := query.Find(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil

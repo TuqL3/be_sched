@@ -60,7 +60,7 @@ func (e *EquipmentTypeController) CreateEquipmentType(c *gin.Context) {
 }
 
 func (e *EquipmentTypeController) DeleteEquipmentType(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("EquipmentTypeId"))
+	id, err := strconv.Atoi(c.Param("equipmenttypeId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -89,7 +89,7 @@ func (e *EquipmentTypeController) DeleteEquipmentType(c *gin.Context) {
 }
 func (e *EquipmentTypeController) UpdateEquipmentType(c *gin.Context) {
 	var EquipmentTypeUpdateDto equipmentType.UpdateEquipmentTypeDto
-	id, err := strconv.Atoi(c.Param("EquipmentTypeId"))
+	id, err := strconv.Atoi(c.Param("equipmenttypeId"))
 
 	if err := c.ShouldBind(&EquipmentTypeUpdateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
@@ -140,7 +140,7 @@ func (r *EquipmentTypeController) GetAllEquipmentType(c *gin.Context) {
 }
 
 func (r *EquipmentTypeController) GetEquipmentTypeById(c *gin.Context) {
-	EquipmentTypeId, err := strconv.ParseInt(c.Param("EquipmentTypeId"), 10, 64)
+	EquipmentTypeId, err := strconv.ParseInt(c.Param("equipmenttypeId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,

@@ -15,19 +15,38 @@ type ScheduleRepository struct {
 	DB *gorm.DB
 }
 
+//func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
+//	if err := r.DB.Table("schedule").Create(createScheduleDto).Error; err != nil {
+//		return nil, err
+//	}
+//
+//	m := &models.Schedule{
+//		UserID:      createScheduleDto.UserID,
+//		RoomID:      createScheduleDto.RoomID,
+//		StartTime:   createScheduleDto.StartTime,
+//		EndTime:     createScheduleDto.EndTime,
+//		Description: createScheduleDto.Description,
+//		Status:      utils.ScheduleStatus(createScheduleDto.Status),
+//	}
+//	return m, nil
+//}
+
 func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
-	if err := r.DB.Table("schedule").Create(createScheduleDto).Error; err != nil {
+	newSchedule := &models.Schedule{
+		UserID:      createScheduleDto.UserID,
+		RoomID:      createScheduleDto.RoomID,
+		StartTime:   createScheduleDto.StartTime,
+		EndTime:     createScheduleDto.EndTime,
+		Status:      utils.ScheduleStatus(createScheduleDto.Status),
+		Description: createScheduleDto.Description,
+		Title:       createScheduleDto.Title,
+	}
+
+	if err := r.DB.Create(newSchedule).Error; err != nil {
 		return nil, err
 	}
 
-	m := &models.Schedule{
-		UserID:    createScheduleDto.UserID,
-		RoomID:    createScheduleDto.RoomID,
-		StartTime: createScheduleDto.StartTime,
-		EndTime:   createScheduleDto.EndTime,
-		Status:    utils.ScheduleStatus(createScheduleDto.Status),
-	}
-	return m, nil
+	return newSchedule, nil
 }
 
 func (r *ScheduleRepository) UpdateSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.Schedule, error) {
@@ -36,11 +55,13 @@ func (r *ScheduleRepository) UpdateSchedule(roomScheduleId uint, dto schedule.Up
 		return nil, err
 	}
 	updates := map[string]interface{}{
-		"status":     utils.ScheduleStatus(dto.Status),
-		"room_id":    dto.RoomID,
-		"start_time": dto.StartTime,
-		"end_time":   dto.EndTime,
-		"user_id":    dto.UserID,
+		"status":      utils.ScheduleStatus(dto.Status),
+		"room_id":     dto.RoomID,
+		"start_time":  dto.StartTime,
+		"end_time":    dto.EndTime,
+		"user_id":     dto.UserID,
+		"description": dto.Description,
+		"title":       dto.Title,
 	}
 
 	if err := r.DB.Table("schedule").Where("id = ?", roomScheduleId).Updates(updates).Error; err != nil {
@@ -65,7 +86,7 @@ func (r *ScheduleRepository) DeleteSchedule(roomScheduleId uint) error {
 
 func (r *ScheduleRepository) GetAllSchedules() ([]*models.Schedule, error) {
 	var roomSchedules []*models.Schedule
-	if err := r.DB.Table("schedule").Find(&roomSchedules).Error; err != nil {
+	if err := r.DB.Table("schedule").Preload("User").Preload("Room").Find(&roomSchedules).Error; err != nil {
 		return nil, err
 	}
 	return roomSchedules, nil

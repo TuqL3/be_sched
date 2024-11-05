@@ -11,5 +11,5 @@ type UserRepositoryInterface interface {
 	GetUserById(userId uint) (*models.User, error)
 	UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error)
 	DeleteUser(userId uint) error
-	GetAllUsers(fullName string) ([]*models.User, error)
+	GetAllUsers(fullName, role string) ([]*models.User, error)
 }

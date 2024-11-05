@@ -46,7 +46,7 @@ func (a *EquipmentRepository) UpdateEquipment(equipmentId uint, dto equipment.Up
 		"name":              dto.Name,
 		"room_id":           dto.RoomID,
 		"status":            dto.Status,
-		"equipment_typt_id": dto.EquipmentTypeID,
+		"equipment_type_id": dto.EquipmentTypeID,
 	}
 
 	if err := a.DB.Table("equipment").Where("id = ?", equipmentId).Updates(updates).Error; err != nil {

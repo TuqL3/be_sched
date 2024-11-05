@@ -15,8 +15,8 @@ func (u *UserService) GetUserById(userId uint) (*models.User, error) {
 	return u.userRepository.GetUserById(userId)
 }
 
-func (u *UserService) GetAllUsers(fullName string) ([]*models.User, error) {
-	return u.userRepository.GetAllUsers(fullName)
+func (u *UserService) GetAllUsers(fullName, role string) ([]*models.User, error) {
+	return u.userRepository.GetAllUsers(fullName, role)
 }
 
 func (u *UserService) DeleteUser(userId uint) error {
