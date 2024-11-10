@@ -18,6 +18,18 @@
     DB_PASSWORD = your db password
     DB_SCHEMA = your db schema
     JWT_KEY = your jwt key
+
+
+PORT=8080
+APP_ENV=local
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=graduate
+DB_USERNAME=postgres
+DB_PASSWORD=123456
+DB_SCHEMA=public
+JWT_KEY=secretKey
 ```
 ### 3. Run
 ```shell
