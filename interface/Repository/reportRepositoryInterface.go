@@ -3,6 +3,7 @@ package Repository
 import (
 	"server/dtos/report"
 	"server/models"
+	"server/utils"
 )
 
 type ReportRepositoryInterface interface {
@@ -11,4 +12,5 @@ type ReportRepositoryInterface interface {
 	DeleteReport(reportId uint) error
 	GetAllReports() ([]*models.Report, error)
 	GetReportById(reportId uint) (*models.Report, error)
+	GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error)
 }

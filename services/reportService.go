@@ -5,10 +5,15 @@ import (
 	"server/interface/Repository"
 	"server/interface/Service"
 	"server/models"
+	"server/utils"
 )
 
 type ReportService struct {
 	reportRepository Repository.ReportRepositoryInterface
+}
+
+func (r *ReportService) GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error) {
+	return r.reportRepository.GetQuantityReportOfRoom()
 }
 
 func (r *ReportService) GetReportById(reportId uint) (*models.Report, error) {

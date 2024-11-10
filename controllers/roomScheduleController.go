@@ -183,6 +183,26 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 
 }
 
+func (r *RoomScheduleController) GetCountScheduleRoom(c *gin.Context) {
+	count, err := r.roomScheduleService.GetCountScheduleRoom()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Server Error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Count",
+		Data:    count,
+		Error:   "",
+	})
+	return
+}
+
 func (r *RoomScheduleController) GetAllRoomSchedule(c *gin.Context) {
 	roomSchedule, err := r.roomScheduleService.GetAllSchedules()
 	if err != nil {

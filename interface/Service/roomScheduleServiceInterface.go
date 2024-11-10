@@ -3,6 +3,7 @@ package Service
 import (
 	"server/dtos/schedule"
 	"server/models"
+	"server/utils"
 )
 
 type RoomScheduleServiceInterface interface {
@@ -10,4 +11,5 @@ type RoomScheduleServiceInterface interface {
 	UpdateSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.Schedule, error)
 	DeleteSchedule(roomScheduleId uint) error
 	GetAllSchedules() ([]*models.Schedule, error)
+	GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error)
 }

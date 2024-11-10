@@ -19,6 +19,25 @@ func NewReportController(reportService Service.ReportServiceInterface) *ReportCo
 	return &ReportController{reportService: reportService}
 }
 
+func (r *ReportController) GetCountReportOfRoom(c *gin.Context) {
+	counts, err := r.reportService.GetQuantityReportOfRoom()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+			Data:    nil,
+			Error:   "Error",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Data:    counts,
+		Error:   "",
+		Message: "Get successfully",
+	})
+}
+
 func (r *ReportController) CreateReport(c *gin.Context) {
 	var reportCreateDto report.CreateReportDto
 

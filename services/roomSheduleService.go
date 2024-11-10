@@ -5,10 +5,15 @@ import (
 	"server/interface/Repository"
 	"server/interface/Service"
 	"server/models"
+	"server/utils"
 )
 
 type ScheduleService struct {
 	scheduleRepo Repository.RoomScheduleRepositoryInterface
+}
+
+func (r *ScheduleService) GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error) {
+	return r.scheduleRepo.GetCountScheduleRoom()
 }
 
 func (r *ScheduleService) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {

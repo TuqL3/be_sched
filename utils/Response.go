@@ -16,3 +16,13 @@ type Claims struct {
 	Role string `json:"role"`
 	jwt.StandardClaims
 }
+
+type ReportRoomCount struct {
+	RoomName    string `json:"room"`
+	ReportCount int    `json:"count"`
+}
+
+type ScheduleRoomCount struct {
+	RoomName      string `json:"room"`
+	ScheduleCount int    `json:"count"`
+}

@@ -15,6 +15,18 @@ type ReportRepository struct {
 	DB *gorm.DB
 }
 
+func (r *ReportRepository) GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error) {
+	var counts []*utils.ReportRoomCount
+	if err := r.DB.Table("report").
+		Select("room.id as room_id, room.name as room_name, COUNT(report.id) as report_count").
+		Joins("JOIN room ON report.room_id = room.id").
+		Group("room.id, room.name").
+		Scan(&counts).Error; err != nil {
+		return nil, err
+	}
+	return counts, nil
+}
+
 func (r *ReportRepository) GetReportById(reportId uint) (*models.Report, error) {
 	var report models.Report
 	if err := r.DB.Table("report").Where("id = ?", reportId).Preload("Room").First(&report).Error; err != nil {

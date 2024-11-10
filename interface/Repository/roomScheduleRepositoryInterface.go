@@ -3,6 +3,7 @@ package Repository
 import (
 	"server/dtos/schedule"
 	"server/models"
+	"server/utils"
 )
 
 type RoomScheduleRepositoryInterface interface {
@@ -10,4 +11,5 @@ type RoomScheduleRepositoryInterface interface {
 	UpdateSchedule(roomScheduleId uint, dto schedule.UpdateRoomSchedule) (*models.Schedule, error)
 	DeleteSchedule(roomScheduleId uint) error
 	GetAllSchedules() ([]*models.Schedule, error)
+	GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error)
 }

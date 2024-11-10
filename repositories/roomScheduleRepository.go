@@ -15,6 +15,19 @@ type ScheduleRepository struct {
 	DB *gorm.DB
 }
 
+func (r *ScheduleRepository) GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error) {
+	var counts []*utils.ScheduleRoomCount
+	if err := r.DB.Table("schedule").
+		Select("room.id as room_id, room.name as room_name, COUNT(schedule.id) as schedule_count").
+		Joins("JOIN room ON schedule.room_id = room.id").
+		Group("room.id, room.name").
+		Scan(&counts).Error; err != nil {
+		return nil, err
+	}
+	return counts, nil
+
+}
+
 //func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
 //	if err := r.DB.Table("schedule").Create(createScheduleDto).Error; err != nil {
 //		return nil, err

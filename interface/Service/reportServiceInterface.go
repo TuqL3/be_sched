@@ -3,6 +3,7 @@ package Service
 import (
 	"server/dtos/report"
 	"server/models"
+	"server/utils"
 )
 
 type ReportServiceInterface interface {
@@ -11,4 +12,5 @@ type ReportServiceInterface interface {
 	DeleteReport(reportId uint) error
 	GetAllReports() ([]*models.Report, error)
 	GetReportById(reportId uint) (*models.Report, error)
+	GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error)
 }
