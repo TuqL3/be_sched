@@ -56,6 +56,25 @@ func (e *EquipmentController) CreateEquipment(c *gin.Context) {
 	})
 }
 
+func (e *EquipmentController) GetQuantityByStatus(c *gin.Context) {
+	count, err := e.equipmentService.GetQuantityByStatus()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Get equipment failed",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Get equipment successfully",
+		Data:    count,
+		Error:   "",
+	})
+}
+
 func (e *EquipmentController) DeleteEquipment(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("equipmentId"))
 	if err != nil {

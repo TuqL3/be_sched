@@ -5,10 +5,15 @@ import (
 	"server/interface/Repository"
 	"server/interface/Service"
 	"server/models"
+	"server/utils"
 )
 
 type EquipmentService struct {
 	equipmentService Repository.EquipmentRepositoryInterface
+}
+
+func (e *EquipmentService) GetQuantityByStatus() ([]*utils.QuantityStatus, error) {
+	return e.equipmentService.GetQuantityByStatus()
 }
 
 func (e *EquipmentService) GetEquipmentById(equipmentId uint) (*models.Equipment, error) {

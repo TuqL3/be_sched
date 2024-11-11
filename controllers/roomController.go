@@ -19,6 +19,25 @@ func NewRoomController(roomService Service.RoomServiceInterface) *RoomController
 	}
 }
 
+func (r *RoomController) GetCountRoom(c *gin.Context) {
+	var count, err = r.roomService.GetRoomCount()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Error",
+			Data:    "",
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    count,
+		Error:   "",
+	})
+}
+
 func (r *RoomController) CreateRoom(c *gin.Context) {
 	var roomCreateDto room.CreateRoomDto
 	if err := c.ShouldBind(&roomCreateDto); err != nil {

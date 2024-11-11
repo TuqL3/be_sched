@@ -15,6 +15,17 @@ type EquipmentRepository struct {
 	DB *gorm.DB
 }
 
+func (a *EquipmentRepository) GetQuantityByStatus() ([]*utils.QuantityStatus, error) {
+	var count []*utils.QuantityStatus
+	if err := a.DB.Table("equipment").
+		Select("status, COUNT(id) as count").
+		Group("status").
+		Scan(&count).Error; err != nil {
+		return nil, err
+	}
+	return count, nil
+}
+
 func (a *EquipmentRepository) GetEquipmentById(equipmentId uint) (*models.Equipment, error) {
 	var equipment models.Equipment
 	if err := a.DB.Table("equipment").Where("id = ?", equipmentId).Preload("Room").Preload("EquipmentType").First(&equipment).Error; err != nil {

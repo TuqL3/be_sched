@@ -9,6 +9,7 @@ func EquipmentRoute(route *gin.Engine, controller *controllers.EquipmentControll
 	equipmentMiddleware := route.Group("/api/v1/equipment")
 	{
 
+		equipmentMiddleware.GET("/equipmentstatus", controller.GetQuantityByStatus)
 		equipmentMiddleware.GET("/:equipmentId", controller.GetEquipmentById)
 		equipmentMiddleware.GET("", controller.GetAllEquipment)
 		equipmentMiddleware.POST("/create", controller.CreateEquipment)

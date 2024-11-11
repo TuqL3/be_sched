@@ -3,6 +3,7 @@ package Repository
 import (
 	"server/dtos/equipment"
 	"server/models"
+	"server/utils"
 )
 
 type EquipmentRepositoryInterface interface {
@@ -11,4 +12,5 @@ type EquipmentRepositoryInterface interface {
 	DeleteEquipment(equipmentId uint) error
 	GetAllEquipments() ([]*models.Equipment, error)
 	GetEquipmentById(equipmentId uint) (*models.Equipment, error)
+	GetQuantityByStatus() ([]*utils.QuantityStatus, error)
 }

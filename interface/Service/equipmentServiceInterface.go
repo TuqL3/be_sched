@@ -3,6 +3,7 @@ package Service
 import (
 	"server/dtos/equipment"
 	"server/models"
+	"server/utils"
 )
 
 type EquipmentServiceInterface interface {
@@ -11,4 +12,5 @@ type EquipmentServiceInterface interface {
 	DeleteEquipment(equipmentId uint) error
 	GetEquipmentById(equipmentId uint) (*models.Equipment, error)
 	GetAllEquipments() ([]*models.Equipment, error)
+	GetQuantityByStatus() ([]*utils.QuantityStatus, error)
 }

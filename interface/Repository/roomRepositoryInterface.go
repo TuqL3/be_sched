@@ -11,4 +11,5 @@ type RoomRepositoryInterface interface {
 	DeleteRoom(roomId uint) error
 	GetAllRooms() ([]*models.Room, error)
 	GetRoomById(roomId uint) (*models.Room, error)
+	GetRoomCount() (int64, error)
 }

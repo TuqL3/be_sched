@@ -17,9 +17,10 @@ type ScheduleRepository struct {
 
 func (r *ScheduleRepository) GetcountScheduleUser() ([]*utils.ScheduleUserCount, error) {
 	var counts []*utils.ScheduleUserCount
-	if err := r.DB.Table("schedule").
-		Select("user.id as user_id, user.name as user_name, COUNT(schedule.id) as schedule_count").
-		Group("user.id, user.name").
+	if err := r.DB.Table("schedule as s").
+		Select("u.full_name AS name, COUNT(s.id) AS count").
+		Joins("LEFT JOIN \"user\" AS u ON u.id = s.user_id").
+		Group("u.full_name").
 		Scan(&counts).Error; err != nil {
 		return nil, err
 	}
