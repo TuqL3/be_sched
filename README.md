@@ -34,6 +34,7 @@
     .air.toml windown
     bin = "tmp\\main.exe"
     cmd = "go build -o ./tmp/main.exe ."
+    
 ```
 ### 3. Run
 ```shell
