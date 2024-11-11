@@ -30,6 +30,11 @@
     DB_PASSWORD=123456
     DB_SCHEMA=public
     JWT_KEY=secretKey
+
+
+    .air.toml windown
+    bin = "tmp\\main.exe"
+    cmd = "go build -o ./tmp/main.exe ."
 ```
 ### 3. Run
 ```shell

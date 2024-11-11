@@ -12,6 +12,11 @@ type ScheduleService struct {
 	scheduleRepo Repository.RoomScheduleRepositoryInterface
 }
 
+// GetcountScheduleUser implements Service.RoomScheduleServiceInterface.
+func (r *ScheduleService) GetcountScheduleUser() ([]*utils.ScheduleUserCount, error) {
+	return r.scheduleRepo.GetcountScheduleUser()
+}
+
 func (r *ScheduleService) GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error) {
 	return r.scheduleRepo.GetCountScheduleRoom()
 }

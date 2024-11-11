@@ -26,3 +26,8 @@ type ScheduleRoomCount struct {
 	RoomName      string `json:"room"`
 	ScheduleCount int    `json:"count"`
 }
+
+type ScheduleUserCount struct {
+	UserName      string `json:"name"`
+	Schedulecount int    `json:"count"`
+}

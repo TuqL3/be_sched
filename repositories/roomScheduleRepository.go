@@ -15,6 +15,17 @@ type ScheduleRepository struct {
 	DB *gorm.DB
 }
 
+func (r *ScheduleRepository) GetcountScheduleUser() ([]*utils.ScheduleUserCount, error) {
+	var counts []*utils.ScheduleUserCount
+	if err := r.DB.Table("schedule").
+		Select("user.id as user_id, user.name as user_name, COUNT(schedule.id) as schedule_count").
+		Group("user.id, user.name").
+		Scan(&counts).Error; err != nil {
+		return nil, err
+	}
+	return counts, nil
+}
+
 func (r *ScheduleRepository) GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error) {
 	var counts []*utils.ScheduleRoomCount
 	if err := r.DB.Table("schedule").
@@ -27,22 +38,6 @@ func (r *ScheduleRepository) GetCountScheduleRoom() ([]*utils.ScheduleRoomCount,
 	return counts, nil
 
 }
-
-//func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
-//	if err := r.DB.Table("schedule").Create(createScheduleDto).Error; err != nil {
-//		return nil, err
-//	}
-//
-//	m := &models.Schedule{
-//		UserID:      createScheduleDto.UserID,
-//		RoomID:      createScheduleDto.RoomID,
-//		StartTime:   createScheduleDto.StartTime,
-//		EndTime:     createScheduleDto.EndTime,
-//		Description: createScheduleDto.Description,
-//		Status:      utils.ScheduleStatus(createScheduleDto.Status),
-//	}
-//	return m, nil
-//}
 
 func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRoomScheduleDto) (*models.Schedule, error) {
 	newSchedule := &models.Schedule{

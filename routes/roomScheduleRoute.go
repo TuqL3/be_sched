@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"server/controllers"
 	"server/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 func RoomScheduleRoute(route *gin.Engine, controller *controllers.RoomScheduleController) {
@@ -13,6 +14,7 @@ func RoomScheduleRoute(route *gin.Engine, controller *controllers.RoomScheduleCo
 		roomScheduleMiddleware.PUT("/update/:roomScheduleId", controller.UpdateRoomSchedule)
 		roomScheduleMiddleware.DELETE("/delete/:roomScheduleId", controller.DeleteRoomSchedule)
 		roomScheduleMiddleware.GET("/countScheduleRoom", controller.GetCountScheduleRoom)
+		roomScheduleMiddleware.GET("/countScheduleUser", controller.GetcountScheduleUser)
 		roomScheduleMiddleware.GET("", controller.GetAllRoomSchedule)
 	}
 }

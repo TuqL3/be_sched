@@ -12,4 +12,5 @@ type RoomScheduleServiceInterface interface {
 	DeleteSchedule(roomScheduleId uint) error
 	GetAllSchedules() ([]*models.Schedule, error)
 	GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error)
+	GetcountScheduleUser() ([]*utils.ScheduleUserCount, error)
 }
