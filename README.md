@@ -32,6 +32,7 @@
     JWT_KEY=secretKey
 
 
+    windown
     .air.toml windown
     bin = "tmp\\main.exe"
     cmd = "go build -o ./tmp/main.exe ."
