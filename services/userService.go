@@ -11,6 +11,10 @@ type UserService struct {
 	userRepository Repository.UserRepositoryInterface
 }
 
+func (u *UserService) GetCountUser() (int64, error) {
+	return u.userRepository.GetCountUser()
+}
+
 func (u *UserService) GetUserById(userId uint) (*models.User, error) {
 	return u.userRepository.GetUserById(userId)
 }

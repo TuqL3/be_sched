@@ -12,6 +12,10 @@ type EquipmentService struct {
 	equipmentService Repository.EquipmentRepositoryInterface
 }
 
+func (e *EquipmentService) GetCountEquipment() (int64, error) {
+	return e.equipmentService.GetCountEquipment()
+}
+
 func (e *EquipmentService) GetQuantityByStatus() ([]*utils.QuantityStatus, error) {
 	return e.equipmentService.GetQuantityByStatus()
 }

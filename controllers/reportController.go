@@ -225,5 +225,23 @@ func (r *ReportController) GetReportById(c *gin.Context) {
 		Data:    report,
 		Error:   "",
 	})
+}
 
+func (r *ReportController) GetCountReport(c *gin.Context) {
+	count, err := r.reportService.GetCountReport()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "internal server error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "success",
+		Data:    count,
+		Error:   "",
+	})
 }

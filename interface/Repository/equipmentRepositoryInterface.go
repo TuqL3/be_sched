@@ -13,4 +13,5 @@ type EquipmentRepositoryInterface interface {
 	GetAllEquipments() ([]*models.Equipment, error)
 	GetEquipmentById(equipmentId uint) (*models.Equipment, error)
 	GetQuantityByStatus() ([]*utils.QuantityStatus, error)
+	GetCountEquipment() (int64, error)
 }

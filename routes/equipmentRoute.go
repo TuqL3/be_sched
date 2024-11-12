@@ -10,6 +10,7 @@ func EquipmentRoute(route *gin.Engine, controller *controllers.EquipmentControll
 	{
 
 		equipmentMiddleware.GET("/equipmentstatus", controller.GetQuantityByStatus)
+		equipmentMiddleware.GET("/getCountEquipment", controller.GetCountEquipment)
 		equipmentMiddleware.GET("/:equipmentId", controller.GetEquipmentById)
 		equipmentMiddleware.GET("", controller.GetAllEquipment)
 		equipmentMiddleware.POST("/create", controller.CreateEquipment)

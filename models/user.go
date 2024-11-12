@@ -18,6 +18,7 @@ type User struct {
 	CreatedAt time.Time       `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time       `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt *gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+	ImageUrl  string          `json:"image_url"`
 }
 
 func (*User) TableName() string {

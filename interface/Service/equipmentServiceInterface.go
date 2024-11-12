@@ -13,4 +13,5 @@ type EquipmentServiceInterface interface {
 	GetEquipmentById(equipmentId uint) (*models.Equipment, error)
 	GetAllEquipments() ([]*models.Equipment, error)
 	GetQuantityByStatus() ([]*utils.QuantityStatus, error)
+	GetCountEquipment() (int64, error)
 }

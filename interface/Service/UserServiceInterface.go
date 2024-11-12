@@ -12,4 +12,5 @@ type UserServiceInterface interface {
 	UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error)
 	DeleteUser(userId uint) error
 	GetAllUsers(fullName, role string) ([]*models.User, error)
+	GetCountUser() (int64, error)
 }

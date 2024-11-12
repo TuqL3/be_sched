@@ -7,6 +7,7 @@ import (
 type UpdateUserDto struct {
 	FullName string `json:"full_name" validate:"omitempty"`
 	Email    string `json:"email" validate:"omitempty,email"`
+	ImageUrl string `json:"image_url"`
 	Phone    string `json:"phone" validate:"omitempty"`
 	Roles    []uint `json:"roles"`
 }

@@ -13,4 +13,5 @@ type ReportServiceInterface interface {
 	GetAllReports() ([]*models.Report, error)
 	GetReportById(reportId uint) (*models.Report, error)
 	GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error)
+	GetCountReport() (int64, error)
 }

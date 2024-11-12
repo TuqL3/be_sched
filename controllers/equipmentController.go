@@ -185,3 +185,22 @@ func (r *EquipmentController) GetEquipmentById(c *gin.Context) {
 	})
 
 }
+
+func (e *EquipmentController) GetCountEquipment(c *gin.Context) {
+	count, err := e.equipmentService.GetCountEquipment()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Get equipment failed",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Get equipment successfully",
+		Data:    count,
+		Error:   "",
+	})
+}

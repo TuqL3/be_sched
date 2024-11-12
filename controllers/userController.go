@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"mime/multipart"
 	"net/http"
 	"os"
 	"server/dtos/user"
@@ -171,35 +172,68 @@ func generateJWT(userID uint, roles []models.Role) (string, error) {
 }
 
 func (u *UserController) UpdateUser(c *gin.Context) {
-	var userUpdateDto user.UpdateUserDto
-	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
-
-	if err := c.ShouldBind(&userUpdateDto); err != nil {
-		c.JSON(http.StatusBadRequest, &utils.Response{
-			Status:  http.StatusBadRequest,
-			Message: "Invalid input data",
-			Data:    nil,
-			Error:   err.Error(),
-		})
-		return
-	}
-	user, err := u.userService.UpdateUser(uint(userId), userUpdateDto)
+	userId, err := strconv.ParseUint(c.Param("userId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, &utils.Response{
-			Status:  http.StatusInternalServerError,
-			Message: "User update error",
-			Data:    nil,
-			Error:   err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID người dùng không hợp lệ"})
 		return
 	}
-	c.JSON(http.StatusOK, &utils.Response{
-		Status:  http.StatusOK,
-		Message: "User updated successfully",
-		Data:    user,
-		Error:   "",
-	})
+
+	file, exists := c.Get("file")
+	fileName, _ := c.Get("fileName")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Không có file để upload"})
+		return
+	}
+
+	uploadedURL, err := utils.UploadToCloudinary(file.(multipart.File), fileName.(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể upload file"})
+		return
+	}
+
+	updateDto := user.UpdateUserDto{
+		ImageUrl: uploadedURL,
+	}
+
+	updatedUser, err := u.userService.UpdateUser(uint(userId), updateDto)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể cập nhật người dùng"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"user": updatedUser})
 }
+
+//func (u *UserController) UpdateUser(c *gin.Context) {
+//	var userUpdateDto user.UpdateUserDto
+//	userId, err := strconv.ParseInt(c.Param("userId"), 10, 64)
+//
+//	if err := c.ShouldBind(&userUpdateDto); err != nil {
+//		c.JSON(http.StatusBadRequest, &utils.Response{
+//			Status:  http.StatusBadRequest,
+//			Message: "Invalid input data",
+//			Data:    nil,
+//			Error:   err.Error(),
+//		})
+//		return
+//	}
+//	user, err := u.userService.UpdateUser(uint(userId), userUpdateDto)
+//	if err != nil {
+//		c.JSON(http.StatusInternalServerError, &utils.Response{
+//			Status:  http.StatusInternalServerError,
+//			Message: "User update error",
+//			Data:    nil,
+//			Error:   err.Error(),
+//		})
+//		return
+//	}
+//	c.JSON(http.StatusOK, &utils.Response{
+//		Status:  http.StatusOK,
+//		Message: "User updated successfully",
+//		Data:    user,
+//		Error:   "",
+//	})
+//}
 
 func (u *UserController) DeleteUser(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("userId"), 10, 64)
@@ -277,6 +311,25 @@ func (u *UserController) GetUserById(c *gin.Context) {
 		Status:  http.StatusOK,
 		Message: "User get successfully",
 		Data:    user,
+		Error:   "",
+	})
+}
+
+func (u *UserController) GetCountUser(c *gin.Context) {
+	count, err := u.userService.GetCountUser()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "User get count error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "User get count successfully",
+		Data:    count,
 		Error:   "",
 	})
 }

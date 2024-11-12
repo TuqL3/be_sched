@@ -15,6 +15,15 @@ type ReportRepository struct {
 	DB *gorm.DB
 }
 
+func (r *ReportRepository) GetCountReport() (int64, error) {
+	var count int64
+	if err := r.DB.Table("report").Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
+
+}
+
 func (r *ReportRepository) GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error) {
 	var counts []*utils.ReportRoomCount
 	if err := r.DB.Table("report").

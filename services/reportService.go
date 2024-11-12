@@ -12,6 +12,10 @@ type ReportService struct {
 	reportRepository Repository.ReportRepositoryInterface
 }
 
+func (r *ReportService) GetCountReport() (int64, error) {
+	return r.reportRepository.GetCountReport()
+}
+
 func (r *ReportService) GetQuantityReportOfRoom() ([]*utils.ReportRoomCount, error) {
 	return r.reportRepository.GetQuantityReportOfRoom()
 }
