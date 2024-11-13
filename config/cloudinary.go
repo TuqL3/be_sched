@@ -2,17 +2,15 @@ package config
 
 import (
 	"github.com/cloudinary/cloudinary-go/v2"
-	"os"
+	"log"
 )
 
-func SetupCloudinary() (*cloudinary.Cloudinary, error) {
-	cldSecret := os.Getenv("API_SECRET")
-	cldName := os.Getenv("CLOUD_NAME")
-	cldKey := os.Getenv("API_KEY")
+var CloudinaryInstance *cloudinary.Cloudinary
 
-	cld, err := cloudinary.NewFromParams(cldName, cldKey, cldSecret)
+func InitCloudinary() {
+	cld, err := cloudinary.NewFromURL("cloudinary://765647244363619:CMLT1-TiHNYw9RrhJTkotTL5lls@tuql3")
 	if err != nil {
-		return nil, err
+		log.Fatal("Error initializing Cloudinary:", err)
 	}
-	return cld, nil
+	CloudinaryInstance = cld
 }

@@ -2,13 +2,12 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type ScheduleRepository struct {
@@ -46,7 +45,7 @@ func (r *ScheduleRepository) CreateSchedule(createScheduleDto *schedule.CreateRo
 		RoomID:      createScheduleDto.RoomID,
 		StartTime:   createScheduleDto.StartTime,
 		EndTime:     createScheduleDto.EndTime,
-		Status:      utils.ScheduleStatus(createScheduleDto.Status),
+		Status:      models.ScheduleStatus(createScheduleDto.Status),
 		Description: createScheduleDto.Description,
 		Title:       createScheduleDto.Title,
 	}
@@ -64,7 +63,7 @@ func (r *ScheduleRepository) UpdateSchedule(roomScheduleId uint, dto schedule.Up
 		return nil, err
 	}
 	updates := map[string]interface{}{
-		"status":      utils.ScheduleStatus(dto.Status),
+		"status":      models.ScheduleStatus(dto.Status),
 		"room_id":     dto.RoomID,
 		"start_time":  dto.StartTime,
 		"end_time":    dto.EndTime,

@@ -1,20 +1,20 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"log"
 	"server/config"
 	"server/controllers"
 	"server/repositories"
 	"server/routes"
 	"server/services"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	config.LoadEnv()
 	config.PostgresConnection()
+	config.InitCloudinary()
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{

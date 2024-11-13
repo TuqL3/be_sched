@@ -2,13 +2,11 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"server/dtos/room"
 	"server/interface/Repository"
 	"server/models"
-	"server/utils"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type RoomRepository struct {
@@ -38,7 +36,7 @@ func (r *RoomRepository) CreateRoom(createRoomDto *room.CreateRoomDto) (*models.
 
 	m := &models.Room{
 		Name:   createRoomDto.Name,
-		Status: utils.RoomStatus(createRoomDto.Status),
+		Status: models.RoomStatus(createRoomDto.Status),
 	}
 
 	return m, nil

@@ -3,23 +3,25 @@ package utils
 import (
 	"context"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
+	"log"
 	"mime/multipart"
 	"server/config"
 )
 
-func UploadToCloudinary(file multipart.File, filePath string) (string, error) {
-	ctx := context.Background()
-	cld, err := config.SetupCloudinary()
+func UploadImageToCloudinary(file *multipart.FileHeader) (string, error) {
+	fileContent, err := file.Open()
 	if err != nil {
 		return "", err
 	}
-	uploadParams := uploader.UploadParams{
-		PublicID: filePath,
+	defer fileContent.Close()
+
+	result, err := config.CloudinaryInstance.Upload.Upload(context.Background(), fileContent, uploader.UploadParams{
+		Folder: "users",
+	})
+	if err != nil {
+		log.Printf("Cloudinary upload error: %v", err)
+		return "", err
 	}
 
-	result, err := cld.Upload.Upload(ctx, file, uploadParams)
-	if err != nil {
-		return "", err
-	}
 	return result.SecureURL, nil
 }

@@ -2,13 +2,12 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"server/dtos/equipment"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type EquipmentRepository struct {
@@ -51,7 +50,7 @@ func (a *EquipmentRepository) CreateEquipment(createEquipmentDto *equipment.Crea
 		Name:            createEquipmentDto.Name,
 		RoomID:          createEquipmentDto.RoomID,
 		EquipmentTypeID: createEquipmentDto.EquipmentTypeID,
-		Status:          utils.EquipmentStatus(createEquipmentDto.Status),
+		Status:          models.EquipmentStatus(createEquipmentDto.Status),
 	}
 	return m, nil
 }

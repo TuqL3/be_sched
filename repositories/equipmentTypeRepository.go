@@ -2,12 +2,11 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"server/dtos/equipmentType"
 	"server/interface/Repository"
 	"server/models"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type EquipmentTypeRepository struct {

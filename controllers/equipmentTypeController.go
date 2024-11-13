@@ -1,13 +1,12 @@
 package controllers
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"server/dtos/equipmentType"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 type EquipmentTypeController struct {

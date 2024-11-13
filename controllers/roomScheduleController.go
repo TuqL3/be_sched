@@ -2,14 +2,13 @@ package controllers
 
 import (
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"server/dtos/schedule"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 )
 
 type RoomScheduleController struct {

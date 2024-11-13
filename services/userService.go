@@ -27,8 +27,8 @@ func (u *UserService) DeleteUser(userId uint) error {
 	return u.userRepository.DeleteUser(userId)
 }
 
-func (u *UserService) UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error) {
-	return u.userRepository.UpdateUser(userId, dto)
+func (u *UserService) UpdateUser(userId uint, dto user.UpdateUserDto, imageUrl string) (*models.User, error) {
+	return u.userRepository.UpdateUser(userId, dto, imageUrl)
 }
 
 func (u *UserService) FindUserByUsername(username string) (*models.User, error) {

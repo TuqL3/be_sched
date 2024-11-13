@@ -2,13 +2,12 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"log"
 	"server/dtos/user"
 	"server/interface/Repository"
 	"server/models"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type UserRepository struct {
@@ -60,39 +59,33 @@ func (u *UserRepository) DeleteUser(userId uint) error {
 	}
 	return nil
 }
-func (u *UserRepository) UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error) {
-	var existingUser models.User
 
-	// Tìm người dùng
+func (u *UserRepository) UpdateUser(userId uint, dto user.UpdateUserDto, imageUrl string) (*models.User, error) {
+	var existingUser models.User
 	if err := u.DB.First(&existingUser, userId).Error; err != nil {
 		log.Printf("User not found: %v", err)
 		return nil, err
 	}
 
-	// Tạo map các trường để cập nhật
-	updates := map[string]interface{}{}
-	if dto.FullName != "" {
-		updates["full_name"] = dto.FullName
-	}
-	if dto.Email != "" {
-		updates["email"] = dto.Email
-	}
-	if dto.Phone != "" {
-		updates["phone"] = dto.Phone
-	}
-	if dto.ImageUrl != "" {
-		updates["image_url"] = dto.ImageUrl
+	updates := map[string]interface{}{
+		"full_name": dto.FullName,
+		"email":     dto.Email,
+		"phone":     dto.Phone,
+		"bio":       dto.Bio,
+		"github":    dto.Github,
+		"facebook":  dto.Facebook,
+		"instagram": dto.Instagram,
 	}
 
-	// Cập nhật các trường vào database
-	if len(updates) > 0 {
-		if err := u.DB.Model(&existingUser).Updates(updates).Error; err != nil {
-			log.Printf("Error updating user: %v", err)
-			return nil, err
-		}
+	if imageUrl != "" {
+		updates["image_url"] = imageUrl
 	}
 
-	// Cập nhật roles nếu có
+	if err := u.DB.Model(&existingUser).Updates(updates).Error; err != nil {
+		log.Printf("Error updating user: %v", err)
+		return nil, err
+	}
+
 	if len(dto.Roles) > 0 {
 		var roles []models.Role
 		if err := u.DB.Table("role").Where("id IN ?", dto.Roles).Find(&roles).Error; err != nil {
@@ -105,7 +98,6 @@ func (u *UserRepository) UpdateUser(userId uint, dto user.UpdateUserDto) (*model
 		}
 	}
 
-	// Tải lại thông tin người dùng với roles
 	if err := u.DB.Preload("Roles").First(&existingUser, userId).Error; err != nil {
 		log.Printf("Error retrieving updated user: %v", err)
 		return nil, err
@@ -113,45 +105,6 @@ func (u *UserRepository) UpdateUser(userId uint, dto user.UpdateUserDto) (*model
 
 	return &existingUser, nil
 }
-
-//func (u *UserRepository) UpdateUser(userId uint, dto user.UpdateUserDto) (*models.User, error) {
-//	var existingUser models.User
-//
-//	if err := u.DB.First(&existingUser, userId).Error; err != nil {
-//		log.Printf("User not found: %v", err)
-//		return nil, err
-//	}
-//
-//	updates := map[string]interface{}{
-//		"full_name": dto.FullName,
-//		"email":     dto.Email,
-//		"phone":     dto.Phone,
-//	}
-//
-//	if err := u.DB.Model(&existingUser).Updates(updates).Error; err != nil {
-//		log.Printf("Error updating user: %v", err)
-//		return nil, err
-//	}
-//
-//	if len(dto.Roles) > 0 {
-//		var roles []models.Role
-//		if err := u.DB.Table("role").Where("id IN ?", dto.Roles).Find(&roles).Error; err != nil {
-//			log.Printf("Error retrieving roles: %v", err)
-//			return nil, err
-//		}
-//		if err := u.DB.Model(&existingUser).Association("Roles").Replace(&roles); err != nil {
-//			log.Printf("Error updating roles for user: %v", err)
-//			return nil, err
-//		}
-//	}
-//
-//	if err := u.DB.Preload("Roles").First(&existingUser, userId).Error; err != nil {
-//		log.Printf("Error retrieving updated user: %v", err)
-//		return nil, err
-//	}
-//
-//	return &existingUser, nil
-//}
 
 func (u *UserRepository) FindUserByUsername(username string) (*models.User, error) {
 	var user models.User

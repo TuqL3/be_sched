@@ -19,6 +19,10 @@ type User struct {
 	UpdatedAt time.Time       `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt *gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 	ImageUrl  string          `json:"image_url"`
+	Bio       string          `json:"bio"`
+	Github    string          `json:"github"`
+	Facebook  string          `json:"facebook"`
+	Instagram string          `json:"instagram"`
 }
 
 func (*User) TableName() string {

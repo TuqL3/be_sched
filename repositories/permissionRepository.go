@@ -2,12 +2,11 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"server/dtos/permission"
 	"server/interface/Repository"
 	"server/models"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type PermissionRepository struct {

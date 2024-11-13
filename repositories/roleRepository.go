@@ -2,13 +2,12 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"log"
 	"server/dtos/role"
 	"server/interface/Repository"
 	"server/models"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type RoleRepository struct {

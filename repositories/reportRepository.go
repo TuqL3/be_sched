@@ -2,13 +2,12 @@ package repositories
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"server/dtos/report"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type ReportRepository struct {
@@ -54,7 +53,7 @@ func (r *ReportRepository) CreateReport(createReportDto *report.CreateReportDto)
 		RoomID:      createReportDto.RoomID,
 		EquipmentID: createReportDto.EquipmentID,
 		Content:     createReportDto.Content,
-		Status:      utils.ReportStatus(createReportDto.Status),
+		Status:      models.ReportStatus(createReportDto.Status),
 	}
 	return m, nil
 }

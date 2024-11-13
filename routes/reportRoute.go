@@ -1,10 +1,9 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin"
 	"server/controllers"
 	"server/middleware"
-
-	"github.com/gin-gonic/gin"
 )
 
 func ReportRoute(route *gin.Engine, controller *controllers.ReportController) {
