@@ -222,7 +222,19 @@ func (r *RoomScheduleController) GetcountScheduleUser(c *gin.Context) {
 }
 
 func (r *RoomScheduleController) GetAllRoomSchedule(c *gin.Context) {
-	roomSchedule, err := r.roomScheduleService.GetAllSchedules()
+	roomIdStr := c.Query("roomId")
+	roomId, err := strconv.ParseUint(roomIdStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid roomId",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	roomSchedule, err := r.roomScheduleService.GetAllSchedules(uint(roomId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,
@@ -232,11 +244,11 @@ func (r *RoomScheduleController) GetAllRoomSchedule(c *gin.Context) {
 		})
 		return
 	}
+
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
 		Message: "GetAllRoomSchedule",
 		Data:    roomSchedule,
 		Error:   "",
 	})
-
 }

@@ -8,7 +8,6 @@ import (
 func RoomRoute(route *gin.Engine, controller *controllers.RoomController) {
 	roomRouteMiddleware := route.Group("/api/v1/room")
 	{
-
 		roomRouteMiddleware.POST("/create", controller.CreateRoom)
 		roomRouteMiddleware.DELETE("/delete/:roomId", controller.DeleteRoom)
 		roomRouteMiddleware.PUT("/update/:roomId", controller.UpdateRoom)

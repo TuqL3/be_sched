@@ -92,11 +92,18 @@ func (r *ScheduleRepository) DeleteSchedule(roomScheduleId uint) error {
 	return nil
 }
 
-func (r *ScheduleRepository) GetAllSchedules() ([]*models.Schedule, error) {
+func (r *ScheduleRepository) GetAllSchedules(roomId uint) ([]*models.Schedule, error) {
 	var roomSchedules []*models.Schedule
-	if err := r.DB.Table("schedule").Preload("User").Preload("Room").Find(&roomSchedules).Error; err != nil {
+
+	if err := r.DB.Debug().
+		Table("schedule").
+		Preload("User").
+		Preload("Room").
+		Where("room_id = ?", roomId).
+		Find(&roomSchedules).Error; err != nil {
 		return nil, err
 	}
+
 	return roomSchedules, nil
 }
 
