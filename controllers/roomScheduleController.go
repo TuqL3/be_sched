@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"server/dtos/schedule"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type RoomScheduleController struct {
@@ -223,18 +224,12 @@ func (r *RoomScheduleController) GetcountScheduleUser(c *gin.Context) {
 
 func (r *RoomScheduleController) GetAllRoomSchedule(c *gin.Context) {
 	roomIdStr := c.Query("roomId")
-	roomId, err := strconv.ParseUint(roomIdStr, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, &utils.Response{
-			Status:  http.StatusBadRequest,
-			Message: "Invalid roomId",
-			Data:    nil,
-			Error:   err.Error(),
-		})
-		return
-	}
+	userIdStr := c.Query("userId")
 
-	roomSchedule, err := r.roomScheduleService.GetAllSchedules(uint(roomId))
+	roomId, _ := strconv.ParseUint(roomIdStr, 10, 64)
+	userId, _ := strconv.ParseUint(userIdStr, 10, 64)
+
+	roomSchedule, err := r.roomScheduleService.GetAllSchedules(uint(roomId), uint(userId))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

@@ -2,12 +2,13 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/models"
 	"server/utils"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type ScheduleRepository struct {
@@ -91,16 +92,20 @@ func (r *ScheduleRepository) DeleteSchedule(roomScheduleId uint) error {
 	}
 	return nil
 }
-
-func (r *ScheduleRepository) GetAllSchedules(roomId uint) ([]*models.Schedule, error) {
+func (r *ScheduleRepository) GetAllSchedules(roomId uint, userId uint) ([]*models.Schedule, error) {
 	var roomSchedules []*models.Schedule
 
-	if err := r.DB.Debug().
-		Table("schedule").
-		Preload("User").
-		Preload("Room").
-		Where("room_id = ?", roomId).
-		Find(&roomSchedules).Error; err != nil {
+	query := r.DB.Debug().Table("schedule").Preload("User").Preload("Room")
+
+	if roomId != 0 {
+		query = query.Where("room_id = ?", roomId)
+	}
+
+	if userId != 0 {
+		query = query.Where("user_id = ?", userId)
+	}
+
+	if err := query.Find(&roomSchedules).Error; err != nil {
 		return nil, err
 	}
 
