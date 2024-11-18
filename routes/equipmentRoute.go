@@ -1,20 +1,22 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"server/controllers"
+	"server/middleware"
+
+	"github.com/gin-gonic/gin"
 )
 
 func EquipmentRoute(route *gin.Engine, controller *controllers.EquipmentController) {
 	equipmentMiddleware := route.Group("/api/v1/equipment")
 	{
 
-		equipmentMiddleware.GET("/equipmentstatus", controller.GetQuantityByStatus)
-		equipmentMiddleware.GET("/getCountEquipment", controller.GetCountEquipment)
-		equipmentMiddleware.GET("/:equipmentId", controller.GetEquipmentById)
-		equipmentMiddleware.GET("", controller.GetAllEquipment)
-		equipmentMiddleware.POST("/create", controller.CreateEquipment)
-		equipmentMiddleware.PUT("/update/:equipmentId", controller.UpdateEquipment)
-		equipmentMiddleware.DELETE("/delete/:equipmentId", controller.DeleteEquipment)
+		equipmentMiddleware.GET("/equipmentstatus", middleware.RolePermissionMiddleware([]string{"admin", "trucban", "giamdoc"}, []string{"viewEquipment"}), controller.GetQuantityByStatus)
+		equipmentMiddleware.GET("/getCountEquipment", middleware.RolePermissionMiddleware([]string{"admin", "trucban", "giamdoc"}, []string{"viewEquipment"}), controller.GetCountEquipment)
+		equipmentMiddleware.GET("/:equipmentId", middleware.RolePermissionMiddleware([]string{"admin", "trucban", "giamdoc"}, []string{"viewEquipment"}), controller.GetEquipmentById)
+		equipmentMiddleware.GET("", middleware.RolePermissionMiddleware([]string{"admin", "trucban", "giamdoc"}, []string{"viewEquipment"}), controller.GetAllEquipment)
+		equipmentMiddleware.POST("/create", middleware.RolePermissionMiddleware([]string{"admin", "trucban"}, []string{"createEquipment"}), controller.CreateEquipment)
+		equipmentMiddleware.PUT("/update/:equipmentId", middleware.RolePermissionMiddleware([]string{"admin", "trucban"}, []string{"modifyEquipment"}), controller.UpdateEquipment)
+		equipmentMiddleware.DELETE("/delete/:equipmentId", middleware.RolePermissionMiddleware([]string{"admin", "trucban"}, []string{"deleteEquipment"}), controller.DeleteEquipment)
 	}
 }

@@ -2,11 +2,13 @@ package config
 
 import (
 	"fmt"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"os"
 	"server/models"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
@@ -47,4 +49,175 @@ func PostgresConnection() {
 		&models.Equipment{}); err != nil {
 		panic(err)
 	}
+
+	seedData(db)
+}
+
+func seedData(db *gorm.DB) {
+	permissions := []models.Permission{
+		{
+			PermissionName: "viewEquipment",
+		},
+		{
+			PermissionName: "createEquipment",
+		},
+		{
+			PermissionName: "modifyEquipment",
+		},
+		{
+			PermissionName: "deleteEquipment",
+		},
+		{
+			PermissionName: "viewEquipmentType",
+		},
+		{
+			PermissionName: "createEquipmentType",
+		},
+		{
+			PermissionName: "modifyEquipmentType",
+		},
+		{
+			PermissionName: "deleteEquipmentType",
+		},
+		{
+			PermissionName: "createPermission",
+		},
+		{
+			PermissionName: "deletePermission",
+		},
+		{
+			PermissionName: "modifyPermission",
+		},
+		{
+			PermissionName: "viewPermission",
+		},
+		{
+			PermissionName: "createReport",
+		},
+		{
+			PermissionName: "modifyReport",
+		},
+		{
+			PermissionName: "deleteReport",
+		},
+		{
+			PermissionName: "viewReport",
+		},
+		{
+			PermissionName: "createRole",
+		},
+		{
+			PermissionName: "deleteRole",
+		},
+		{
+			PermissionName: "modifyRole",
+		},
+		{
+			PermissionName: "viewRole",
+		},
+		{
+			PermissionName: "createRoom",
+		},
+		{
+			PermissionName: "deleteRoom",
+		},
+		{
+			PermissionName: "modifyRoom",
+		},
+		{
+			PermissionName: "viewRoom",
+		},
+		{
+			PermissionName: "createSchedule",
+		},
+		{
+			PermissionName: "modifySchedule",
+		},
+		{
+			PermissionName: "deleteSchedule",
+		},
+		{
+			PermissionName: "viewSchedule",
+		},
+		{
+			PermissionName: "modifyUser",
+		},
+		{
+			PermissionName: "deleteUser",
+		},
+		{
+			PermissionName: "viewUser",
+		},
+		{
+			PermissionName: "viewProfile",
+		},
+		{
+			PermissionName: "createUser",
+		},
+	}
+
+	for _, permission := range permissions {
+		db.Create(&permission)
+	}
+
+	roles := []models.Role{
+		{RoleName: "admin", Permissions: []models.Permission{
+			{ID: 1},
+			{ID: 2},
+			{ID: 3},
+			{ID: 4},
+			{ID: 5},
+			{ID: 6},
+			{ID: 7},
+			{ID: 8},
+			{ID: 9},
+			{ID: 10},
+			{ID: 11},
+			{ID: 12},
+			{ID: 13},
+			{ID: 14},
+			{ID: 15},
+			{ID: 16},
+			{ID: 17},
+			{ID: 18},
+			{ID: 19},
+			{ID: 20},
+			{ID: 21},
+			{ID: 22},
+			{ID: 23},
+			{ID: 24},
+			{ID: 25},
+			{ID: 26},
+			{ID: 27},
+			{ID: 28},
+			{ID: 29},
+			{ID: 30},
+			{ID: 31},
+			{ID: 32},
+			{ID: 33},
+		}},
+		{RoleName: "trucban"},
+		{RoleName: "giangvien"},
+		{RoleName: "giamdoc"},
+	}
+
+	for _, role := range roles {
+		db.Create(&role)
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("12345678"), bcrypt.DefaultCost)
+	if err != nil {
+		panic("failed to hash password")
+	}
+	users := []models.User{
+		{Username: "admin", Password: string(hashedPassword), FullName: "Admin", Email: "admin@admin.com", Phone: "0386626021", Roles: []models.Role{
+			{
+				ID: 1,
+			},
+		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
+	}
+
+	db.Create(&users)
+
+	fmt.Println("Seeding data completed")
+
 }
