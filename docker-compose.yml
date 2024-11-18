@@ -9,7 +9,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "${DB_PORT}:5432"
-    restart: always
     volumes:
       - psql_volume:/var/lib/postgresql/data
 
