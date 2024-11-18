@@ -8,8 +8,9 @@ import (
 type ScheduleStatus string
 
 const (
-	ScheduleActive   ScheduleStatus = "active"
-	ScheduleInactive ScheduleStatus = "inactive"
+	SchedulePending ScheduleStatus = "pending"
+	ScheduleResolve ScheduleStatus = "resolve"
+	ScheduleReject  ScheduleStatus = "reject"
 )
 
 type Schedule struct {

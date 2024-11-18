@@ -14,6 +14,7 @@ func RoomScheduleRoute(route *gin.Engine, controller *controllers.RoomScheduleCo
 		roomScheduleMiddleware.DELETE("/delete/:roomScheduleId", controller.DeleteRoomSchedule)
 		roomScheduleMiddleware.GET("/countScheduleRoom", controller.GetCountScheduleRoom)
 		roomScheduleMiddleware.GET("/countScheduleUser", controller.GetcountScheduleUser)
+		roomScheduleMiddleware.GET("/:scheduleId", controller.GetScheduleById)
 		roomScheduleMiddleware.GET("", controller.GetAllRoomSchedule)
 	}
 }

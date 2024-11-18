@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/models"
@@ -13,6 +14,14 @@ import (
 
 type ScheduleRepository struct {
 	DB *gorm.DB
+}
+
+func (r *ScheduleRepository) GetScheduleById(scheduleId uint) (*models.Schedule, error) {
+	var schedule models.Schedule
+	if err := r.DB.Preload("Room").Preload("User").First(&schedule, scheduleId).Error; err != nil {
+		return nil, err
+	}
+	return &schedule, nil
 }
 
 func (r *ScheduleRepository) GetcountScheduleUser() ([]*utils.ScheduleUserCount, error) {
@@ -72,6 +81,8 @@ func (r *ScheduleRepository) UpdateSchedule(roomScheduleId uint, dto schedule.Up
 		"description": dto.Description,
 		"title":       dto.Title,
 	}
+
+	fmt.Println(dto)
 
 	if err := r.DB.Table("schedule").Where("id = ?", roomScheduleId).Updates(updates).Error; err != nil {
 		return nil, err

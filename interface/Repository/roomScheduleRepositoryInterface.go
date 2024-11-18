@@ -13,4 +13,5 @@ type RoomScheduleRepositoryInterface interface {
 	GetAllSchedules(roomId uint, userId uint) ([]*models.Schedule, error)
 	GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error)
 	GetcountScheduleUser() ([]*utils.ScheduleUserCount, error)
+	GetScheduleById(scheduleId uint) (*models.Schedule, error)
 }
