@@ -34,9 +34,18 @@
     .air.toml windown
     bin = "tmp\\main.exe"
     cmd = "go build -o ./tmp/main.exe ."
+
+    .air.toml linux
+    bin = "tmp/main"                 
+    cmd = "go build -o ./tmp/main ."  
     
 ```
 ### 3. Run
 ```shell
   air
+```
+
+```shel
+  username: admin
+  password: 12345678
 ```

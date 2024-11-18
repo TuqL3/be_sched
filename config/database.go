@@ -218,6 +218,28 @@ func seedData(db *gorm.DB) {
 
 	db.Create(&users)
 
+	equipmentTypes := []models.EquipmentType{
+		{
+			Name: "Computer",
+		},
+		{
+			Name: "Table",
+		},
+		{
+			Name: "Air condition",
+		},
+		{
+			Name: "Board",
+		},
+		{
+			Name: "Projector",
+		},
+	}
+
+	for _, equipmenttype := range equipmentTypes {
+		db.Create(&equipmenttype)
+	}
+
 	fmt.Println("Seeding data completed")
 
 }
