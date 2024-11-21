@@ -46,6 +46,8 @@ func PostgresConnection() {
 		&models.Schedule{},
 		&models.Role{},
 		&models.Permission{},
+		&models.Conversation{},
+		&models.Message{},
 		&models.Equipment{}); err != nil {
 		panic(err)
 	}

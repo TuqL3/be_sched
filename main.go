@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	socketio "github.com/googollee/go-socket.io"
 )
 
 func main() {
@@ -58,6 +59,14 @@ func main() {
 	permissionService := services.NewPermissionService(permissionRepository)
 	permissionController := controllers.NewPermissionController(permissionService)
 
+	conversationRepository := repositories.NewConversationRepository(config.DB)
+	conversationService := services.NewConversationService(conversationRepository)
+	conversationController := controllers.NewConversationController(conversationService)
+
+	messageRepository := repositories.NewMessageRepository(config.DB)
+	messageService := services.NewMessageService(messageRepository)
+	messegeController := controllers.NewMessageController(messageService)
+
 	routes.UserRoute(router, userController)
 	routes.RoomRoute(router, roomController)
 	routes.ReportRoute(router, reportController)
@@ -66,6 +75,19 @@ func main() {
 	routes.EquipmentTypeRoute(router, equipmentTypeController)
 	routes.RoleRoute(router, roleController)
 	routes.PermissionRoute(router, permissionController)
+	routes.ConversationRoute(router, conversationController)
+	routes.MessageRoute(router, messegeController)
+
+	server := socketio.NewServer(nil)
+	server.OnEvent("/", "send_message", func(s socketio.Conn, msg map[string]interface{}) {
+		server.BroadcastToRoom("/", msg["conversation_id"].(string), "receive_message", msg)
+	})
+
+	router.GET("/socket.io/*any", gin.WrapH(server))
+	router.POST("/socket.io/*any", gin.WrapH(server))
+
+	go server.Serve()
+	defer server.Close()
 
 	if err := router.Run(":8081"); err != nil {
 		log.Fatal("failed run app: ", err)
