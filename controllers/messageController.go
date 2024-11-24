@@ -7,6 +7,7 @@ import (
 	"server/interface/Service"
 	"server/models"
 	"server/utils"
+	"strconv"
 )
 
 type MessageController struct {
@@ -60,4 +61,34 @@ func convertMessageToDTO(message *models.Message) *message2.SendMessageDTO {
 		ReceiverID:     message.ReceiverID,
 		Content:        message.Content,
 	}
+}
+
+func (r *MessageController) GetMessageByConversationId(c *gin.Context) {
+	conversationId, err := strconv.ParseInt(c.Param("conversationId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, &utils.Response{
+			Status:  http.StatusBadRequest,
+			Message: "Invalid input data",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+	conversation, err := r.messageService.GetMessageByConversationId(uint(conversationId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, &utils.Response{
+			Status:  http.StatusInternalServerError,
+			Message: "Report get error",
+			Data:    nil,
+			Error:   err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, &utils.Response{
+		Status:  http.StatusOK,
+		Message: "Report get successfully",
+		Data:    conversation,
+		Error:   "",
+	})
 }

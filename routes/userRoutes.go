@@ -22,6 +22,6 @@ func UserRoute(route *gin.Engine, controller *controllers.UserController) {
 		userRouteMiddleware.GET("/getcountuser", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"viewUser"}), controller.GetCountUser)
 		userRouteMiddleware.GET("/profile", middleware.RolePermissionMiddleware([]string{"admin", "giangvien", "trucban", "giamdoc"}, []string{"viewProfile"}), controller.GetAllUsers)
 		userRouteMiddleware.GET("/:userId", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"viewUser"}), controller.GetUserById)
-		userRouteMiddleware.GET("", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"viewUser"}), controller.GetAllUsers)
+		userRouteMiddleware.GET("", controller.GetAllUsers)
 	}
 }

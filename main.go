@@ -1,24 +1,85 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"server/config"
 	"server/controllers"
 	"server/repositories"
 	"server/routes"
 	"server/services"
+	"sync"
+
+	"github.com/gorilla/websocket"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	socketio "github.com/googollee/go-socket.io"
 )
+
+
+type WSMessage struct {
+    ConversationID uint   `json:"conversation_id"`
+    SenderID       uint   `json:"sender_id"`
+    ReceiverID     uint   `json:"receiver_id"`
+    Content        string `json:"content"`
+}
+
+type Client struct {
+    userID uint
+    conn   *websocket.Conn
+}
+
+type WSHub struct {
+    clients    map[uint]*Client
+    mutex      sync.RWMutex
+}
+
+func NewWSHub() *WSHub {
+    return &WSHub{
+        clients: make(map[uint]*Client),
+    }
+}
+
+func (h *WSHub) Register(userID uint, client *Client) {
+    h.mutex.Lock()
+    h.clients[userID] = client
+    h.mutex.Unlock()
+}
+
+func (h *WSHub) Unregister(userID uint) {
+    h.mutex.Lock()
+    if _, ok := h.clients[userID]; ok {
+        delete(h.clients, userID)
+    }
+    h.mutex.Unlock()
+}
+
+func (h *WSHub) SendToUser(userID uint, message []byte) error {
+    h.mutex.RLock()
+    client, exists := h.clients[userID]
+    h.mutex.RUnlock()
+
+    if exists {
+        return client.conn.WriteMessage(websocket.TextMessage, message)
+    }
+    return nil
+}
+
+var upgrader = websocket.Upgrader{
+    CheckOrigin: func(r *http.Request) bool {
+        return true
+    },
+}
+
 
 func main() {
 	config.LoadEnv()
 	config.PostgresConnection()
 	config.InitCloudinary()
-	router := gin.Default()
 
+	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -27,6 +88,15 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+	hub := NewWSHub()
+
+
+    router.GET("/ws/:userId", func(c *gin.Context) {
+        userID := c.Param("userId")
+        var uID uint
+        fmt.Sscanf(userID, "%d", &uID)
+        handleWebSocket(c, hub, uID)
+    })
 	userRepository := repositories.NewUserRepository(config.DB)
 	userService := services.NewUserService(userRepository)
 	userController := controllers.NewUserController(userService)
@@ -78,18 +148,38 @@ func main() {
 	routes.ConversationRoute(router, conversationController)
 	routes.MessageRoute(router, messegeController)
 
-	server := socketio.NewServer(nil)
-	server.OnEvent("/", "send_message", func(s socketio.Conn, msg map[string]interface{}) {
-		server.BroadcastToRoom("/", msg["conversation_id"].(string), "receive_message", msg)
-	})
-
-	router.GET("/socket.io/*any", gin.WrapH(server))
-	router.POST("/socket.io/*any", gin.WrapH(server))
-
-	go server.Serve()
-	defer server.Close()
-
+	
 	if err := router.Run(":8081"); err != nil {
-		log.Fatal("failed run app: ", err)
+		log.Fatal("failed to run app: ", err)
 	}
+}
+
+func handleWebSocket(c *gin.Context, hub *WSHub, userID uint) {
+    conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+    if err != nil {
+        log.Printf("Failed to upgrade connection: %v", err)
+        return
+    }
+
+    client := &Client{
+        userID: userID,
+        conn:   conn,
+    }
+
+    hub.Register(userID, client)
+    defer hub.Unregister(userID)
+
+    for {
+        _, msgBytes, err := conn.ReadMessage()
+        if err != nil {
+            break
+        }
+
+        var msg WSMessage
+        if err := json.Unmarshal(msgBytes, &msg); err != nil {
+            continue
+        }
+
+        hub.SendToUser(msg.ReceiverID, msgBytes)
+    }
 }

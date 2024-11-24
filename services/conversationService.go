@@ -11,6 +11,14 @@ type ConversationService struct {
 	ConversationService Repository.ConversationRepositoryInterface
 }
 
+func (s *ConversationService) GetAllConversation() ([]*models.Conversation, error) {
+	return s.ConversationService.GetAllConversation()
+}
+
+func (s *ConversationService) GetConversationById(conversationId uint) (*models.Conversation, error) {
+	return s.ConversationService.GetConversationById(conversationId)
+}
+
 func (c *ConversationService) FindOrCreateConversation(dto *conversation.FindOrCreateDto) (*models.Conversation, error) {
 	return c.ConversationService.FindOrCreateConversation(dto)
 }

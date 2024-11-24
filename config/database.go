@@ -216,9 +216,21 @@ func seedData(db *gorm.DB) {
 				ID: 1,
 			},
 		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
+		{Username: "test1", Password: string(hashedPassword), FullName: "Test1", Email: "test1@test.com", Phone: "0386626021", Roles: []models.Role{
+			{
+				ID: 2,
+			},
+		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
+		{Username: "test2", Password: string(hashedPassword), FullName: "Test2", Email: "test2@test.com", Phone: "0386626021", Roles: []models.Role{
+			{
+				ID: 2,
+			},
+		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
 	}
 
-	db.Create(&users)
+	for _, user := range users {
+		db.Create(&user)
+	}
 
 	equipmentTypes := []models.EquipmentType{
 		{

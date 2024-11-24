@@ -11,8 +11,20 @@ type MessageRepository struct {
 	DB *gorm.DB
 }
 
+func (m MessageRepository) GetMessageByConversationId(conversationId uint) ([]models.Message, error) {
+	var messages []models.Message
+	if err := m.DB.Table("message").
+		Where("conversation_id = ?", conversationId).
+		Preload("Sender").   // Tải thông tin người gửi
+		Preload("Receiver"). // Tải thông tin người nhận
+		Find(&messages).Error; err != nil {
+		return nil, err
+	}
+	return messages, nil
+}
+
 func (m MessageRepository) SendMessage(dto *message.SendMessageDTO) (*models.Message, error) {
-	if err := m.DB.Table("messages").Create(dto).Error; err != nil {
+	if err := m.DB.Table("message").Create(dto).Error; err != nil {
 		return nil, err
 	}
 

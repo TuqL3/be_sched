@@ -11,6 +11,10 @@ type MessageService struct {
 	messageRepository Repository.MessageRepositoryInterface
 }
 
+func (m MessageService) GetMessageByConversationId(conversationId uint) ([]models.Message, error) {
+	return m.messageRepository.GetMessageByConversationId(conversationId)
+}
+
 func (m MessageService) SendMessage(dto *message.SendMessageDTO) (*models.Message, error) {
 	return m.messageRepository.SendMessage(dto)
 }
