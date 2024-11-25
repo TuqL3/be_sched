@@ -1,10 +1,11 @@
 package repositories
 
 import (
-	"gorm.io/gorm"
 	"server/dtos/message"
 	"server/interface/Repository"
 	"server/models"
+
+	"gorm.io/gorm"
 )
 
 type MessageRepository struct {
@@ -15,8 +16,8 @@ func (m MessageRepository) GetMessageByConversationId(conversationId uint) ([]mo
 	var messages []models.Message
 	if err := m.DB.Table("message").
 		Where("conversation_id = ?", conversationId).
-		Preload("Sender").   // Tải thông tin người gửi
-		Preload("Receiver"). // Tải thông tin người nhận
+		Preload("Sender").
+		Preload("Receiver").
 		Find(&messages).Error; err != nil {
 		return nil, err
 	}
@@ -33,6 +34,7 @@ func (m MessageRepository) SendMessage(dto *message.SendMessageDTO) (*models.Mes
 		ReceiverID:     dto.ReceiverID,
 		Content:        dto.Content,
 		ConversationID: dto.ConversationID,
+		CreatedAt:      dto.CreatedAt,
 	}
 	return msg, nil
 }
