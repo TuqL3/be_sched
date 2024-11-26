@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"server/controllers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func ConversationRoute(route *gin.Engine, controller *controllers.ConversationController) {
@@ -11,6 +12,6 @@ func ConversationRoute(route *gin.Engine, controller *controllers.ConversationCo
 		conversationGroup.POST("/findorcreate", controller.FindOrCreateConversation)
 		conversationGroup.GET("/", controller.GetAllConversation)
 		conversationGroup.GET("/:conversationId", controller.GetConversaionById)
-		conversationGroup.POST("/:conversationId", controller.UpdateLastMessage)
+		conversationGroup.PUT("/:conversationId", controller.UpdateLastMessage)
 	}
 }
