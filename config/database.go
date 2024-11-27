@@ -56,6 +56,31 @@ func PostgresConnection() {
 }
 
 func seedData(db *gorm.DB) {
+
+	tables := []interface{}{
+		&models.Permission{},
+		&models.Role{},
+		&models.User{},
+		&models.EquipmentType{},
+		&models.Room{},
+		&models.Equipment{},
+		&models.Report{},
+		&models.Schedule{},
+	}
+
+	for _, table := range tables {
+		var count int64
+		if err := db.Model(table).Count(&count).Error; err != nil {
+			panic(fmt.Sprintf("Error checking table: %v", err))
+		}
+
+		if count > 0 {
+			fmt.Printf("Table %T already has data. Skipping seeding.\n", table)
+			return
+		}
+	}
+
+	fmt.Println("Starting data seeding...")
 	permissions := []models.Permission{
 		{
 			PermissionName: "viewEquipment",
@@ -218,12 +243,12 @@ func seedData(db *gorm.DB) {
 		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
 		{Username: "test1", Password: string(hashedPassword), FullName: "Test1", Email: "test1@test.com", Phone: "0386626021", Roles: []models.Role{
 			{
-				ID: 2,
+				ID: 3,
 			},
 		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
 		{Username: "test2", Password: string(hashedPassword), FullName: "Test2", Email: "test2@test.com", Phone: "0386626021", Roles: []models.Role{
 			{
-				ID: 2,
+				ID: 3,
 			},
 		}, ImageUrl: "", Bio: "Admin", Github: "https://github.com/TuqL3", Facebook: "https://www.facebook.com/TuqL3", Instagram: "https://instagram.com/tuq.l3"},
 	}
@@ -252,6 +277,155 @@ func seedData(db *gorm.DB) {
 
 	for _, equipmenttype := range equipmentTypes {
 		db.Create(&equipmenttype)
+	}
+
+	rooms := []models.Room{
+		{
+			Name:   "601",
+			Status: "available",
+		},
+		{
+			Name:   "602",
+			Status: "occupied",
+		},
+		{
+			Name:   "603",
+			Status: "maintenance",
+		},
+	}
+
+	for _, room := range rooms {
+		db.Create(&room)
+	}
+
+	equipments := []models.Equipment{
+		{
+			Name:            "Computer 1",
+			EquipmentTypeID: 1,
+			RoomID:          1,
+			Status:          "working",
+		},
+		{
+			Name:            "Board 1",
+			EquipmentTypeID: 4,
+			RoomID:          1,
+			Status:          "broken",
+		},
+		{
+			Name:            "Table 1",
+			EquipmentTypeID: 2,
+			RoomID:          1,
+			Status:          "maintained",
+		},
+		{
+			Name:            "Computer 1",
+			EquipmentTypeID: 1,
+			RoomID:          2,
+			Status:          "working",
+		},
+		{
+			Name:            "Board 1",
+			EquipmentTypeID: 4,
+			RoomID:          2,
+			Status:          "broken",
+		},
+		{
+			Name:            "Table 1",
+			EquipmentTypeID: 2,
+			RoomID:          2,
+			Status:          "maintained",
+		},
+		{
+			Name:            "Computer 1",
+			EquipmentTypeID: 1,
+			RoomID:          3,
+			Status:          "working",
+		},
+		{
+			Name:            "Board 1",
+			EquipmentTypeID: 4,
+			RoomID:          3,
+			Status:          "broken",
+		},
+		{
+			Name:            "Table 1",
+			EquipmentTypeID: 2,
+			RoomID:          3,
+			Status:          "maintained",
+		},
+	}
+
+	for _, equipment := range equipments {
+		db.Create(&equipment)
+	}
+
+	reports := []models.Report{
+		{
+			RoomID:      1,
+			UserID:      2,
+			EquipmentID: 1,
+			Content:     "Test content",
+			Status:      "pending",
+		},
+		{
+			RoomID:      2,
+			UserID:      3,
+			EquipmentID: 5,
+			Content:     "Test content",
+			Status:      "pending",
+		},
+		{
+			RoomID:      3,
+			UserID:      2,
+			EquipmentID: 9,
+			Content:     "Test content",
+			Status:      "resolve",
+		},
+		{
+			RoomID:      1,
+			UserID:      2,
+			EquipmentID: 2,
+			Content:     "Test content",
+			Status:      "pending",
+		},
+	}
+
+	for _, report := range reports {
+		db.Create(&report)
+	}
+
+	schedules := []models.Schedule{
+		{
+			RoomID:      1,
+			UserID:      2,
+			StartTime:   time.Now().Add(time.Hour * 24),
+			EndTime:     time.Now().Add(time.Hour * 26),
+			Status:      "pending",
+			Description: "Team meeting",
+			Title:       "Quarterly Sync",
+		},
+		{
+			RoomID:      2,
+			UserID:      3,
+			StartTime:   time.Now().Add(time.Hour * 48),
+			EndTime:     time.Now().Add(time.Hour * 50),
+			Status:      "resolve",
+			Description: "Project brainstorming session",
+			Title:       "Creative Session",
+		},
+		{
+			RoomID:      3,
+			UserID:      3,
+			StartTime:   time.Now().Add(time.Hour * 72),
+			EndTime:     time.Now().Add(time.Hour * 74),
+			Status:      "reject",
+			Description: "Client presentation",
+			Title:       "Project Alpha Presentation",
+		},
+	}
+
+	for _, schedule := range schedules {
+		db.Create(&schedule)
 	}
 
 	fmt.Println("Seeding data completed")

@@ -13,8 +13,8 @@ func RoomRoute(route *gin.Engine, controller *controllers.RoomController) {
 		roomRouteMiddleware.POST("/create", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"createRoom"}), controller.CreateRoom)
 		roomRouteMiddleware.DELETE("/delete/:roomId", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"deleteRoom"}), controller.DeleteRoom)
 		roomRouteMiddleware.PUT("/update/:roomId", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"modifyRoom"}), controller.UpdateRoom)
-		roomRouteMiddleware.GET("", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"viewRoom"}), controller.GetAllRoom)
-		roomRouteMiddleware.GET("/getcountroom", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"viewRoom"}), controller.GetCountRoom)
-		roomRouteMiddleware.GET("/:roomId", middleware.RolePermissionMiddleware([]string{"admin"}, []string{"viewRoom"}), controller.GetRoomById)
+		roomRouteMiddleware.GET("", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewRoom"}), controller.GetAllRoom)
+		roomRouteMiddleware.GET("/getcountroom", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewRoom"}), controller.GetCountRoom)
+		roomRouteMiddleware.GET("/:roomId", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewRoom"}), controller.GetRoomById)
 	}
 }

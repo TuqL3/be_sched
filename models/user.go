@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -18,7 +19,7 @@ type User struct {
 	CreatedAt time.Time       `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time       `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt *gorm.DeletedAt `json:"deleted_at" gorm:"index"`
-	ImageUrl  string          `json:"image_url"`
+	ImageUrl  string          `json:"image_url" gorm:"default:'https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg'"`
 	Bio       string          `json:"bio"`
 	Github    string          `json:"github"`
 	Facebook  string          `json:"facebook"`
