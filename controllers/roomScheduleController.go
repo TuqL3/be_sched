@@ -134,60 +134,9 @@ func (r *RoomScheduleController) DeleteRoomSchedule(c *gin.Context) {
 
 }
 
-//func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
-//	var roomScheduleDto schedule.UpdateRoomSchedule
-//	roomScheduleId, err := strconv.Atoi(c.Param("roomScheduleId"))
-//	if err != nil {
-//		c.JSON(http.StatusBadRequest, &utils.Response{
-//			Status:  http.StatusBadRequest,
-//			Message: "Invalid id",
-//			Data:    nil,
-//			Error:   err.Error(),
-//		})
-//		return
-//	}
-//
-//	if err := c.ShouldBindJSON(&roomScheduleDto); err != nil {
-//		c.JSON(http.StatusBadRequest, &utils.Response{
-//			Status:  http.StatusBadRequest,
-//			Message: "Invalid input data",
-//			Data:    nil,
-//			Error:   err.Error(),
-//		})
-//		return
-//	}
-//	if err := roomScheduleDto.Validate(); err != nil {
-//		c.JSON(http.StatusBadRequest, &utils.Response{
-//			Status:  http.StatusBadRequest,
-//			Message: "Invalid input data",
-//			Data:    nil,
-//			Error:   err.Error(),
-//		})
-//		return
-//	}
-//	roomSchedule, err := r.roomScheduleService.UpdateSchedule(uint(roomScheduleId), roomScheduleDto)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, &utils.Response{
-//			Status:  http.StatusInternalServerError,
-//			Message: "Server Error",
-//			Data:    nil,
-//			Error:   err.Error(),
-//		})
-//		return
-//	}
-//	c.JSON(http.StatusOK, &utils.Response{
-//		Status:  http.StatusOK,
-//		Message: "Updated",
-//		Data:    roomSchedule,
-//		Error:   "",
-//	})
-//
-//}
-
 func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 	var roomScheduleDto schedule.UpdateRoomSchedule
 
-	// Lấy ID từ tham số URL
 	roomScheduleId, err := strconv.Atoi(c.Param("roomScheduleId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
@@ -199,7 +148,6 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 		return
 	}
 
-	// Bind dữ liệu JSON từ body request
 	if err := c.ShouldBindJSON(&roomScheduleDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -210,7 +158,6 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 		return
 	}
 
-	// Kiểm tra tính hợp lệ của thời gian
 	if roomScheduleDto.StartTime.After(roomScheduleDto.EndTime) {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -221,7 +168,6 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 		return
 	}
 
-	// Kiểm tra tính hợp lệ của các trường khác trong DTO
 	if err := roomScheduleDto.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{
 			Status:  http.StatusBadRequest,
@@ -232,7 +178,6 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 		return
 	}
 
-	// Cập nhật lịch phòng
 	roomSchedule, err := r.roomScheduleService.UpdateSchedule(uint(roomScheduleId), roomScheduleDto)
 	if err != nil {
 
@@ -246,7 +191,6 @@ func (r *RoomScheduleController) UpdateRoomSchedule(c *gin.Context) {
 
 	}
 
-	// Phản hồi thành công
 	c.JSON(http.StatusOK, &utils.Response{
 		Status:  http.StatusOK,
 		Message: "Room schedule updated successfully",

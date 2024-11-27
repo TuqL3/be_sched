@@ -32,13 +32,10 @@ func (r *ConversationRepository) GetConversationById(conversationId uint) (*mode
 func (r *ConversationRepository) FindOrCreateConversation(dto *conversation.FindOrCreateDto) (*models.Conversation, error) {
 	var conversation models.Conversation
 
-	// Kiểm tra nếu conversation đã tồn tại
 	err := r.DB.Table("conversation").Where("(sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)",
 		dto.SenderID, dto.ReceiverID, dto.ReceiverID, dto.SenderID).Preload("Messages").First(&conversation).Error
 
-	// Nếu không tồn tại
 	if err == gorm.ErrRecordNotFound {
-		// Kiểm tra SenderID tồn tại trong bảng users
 		var senderExists bool
 		if err := r.DB.Table("user").Select("count(*) > 0").Where("id = ?", dto.SenderID).Find(&senderExists).Error; err != nil {
 			return nil, err
@@ -47,7 +44,6 @@ func (r *ConversationRepository) FindOrCreateConversation(dto *conversation.Find
 			return nil, fmt.Errorf("SenderID %d không tồn tại", dto.SenderID)
 		}
 
-		// Kiểm tra ReceiverID tồn tại trong bảng users
 		var receiverExists bool
 		if err := r.DB.Table("user").Select("count(*) > 0").Where("id = ?", dto.ReceiverID).Find(&receiverExists).Error; err != nil {
 			return nil, err
@@ -56,7 +52,6 @@ func (r *ConversationRepository) FindOrCreateConversation(dto *conversation.Find
 			return nil, fmt.Errorf("ReceiverID %d không tồn tại", dto.ReceiverID)
 		}
 
-		// Tạo conversation mới
 		conversation = models.Conversation{
 			SenderID:   dto.SenderID,
 			ReceiverID: dto.ReceiverID,

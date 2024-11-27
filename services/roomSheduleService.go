@@ -16,7 +16,6 @@ func (r *ScheduleService) GetScheduleById(scheduleId uint) (*models.Schedule, er
 	return r.scheduleRepo.GetScheduleById(scheduleId)
 }
 
-// GetcountScheduleUser implements Service.RoomScheduleServiceInterface.
 func (r *ScheduleService) GetcountScheduleUser() ([]*utils.ScheduleUserCount, error) {
 	return r.scheduleRepo.GetcountScheduleUser()
 }
