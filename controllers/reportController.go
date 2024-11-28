@@ -2,13 +2,14 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"server/dtos/report"
 	"server/interface/Service"
 	"server/utils"
 	"strconv"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type ReportController struct {
@@ -75,10 +76,10 @@ func (r *ReportController) CreateReport(c *gin.Context) {
 		claims.Role = roleStr
 	}
 
-	if claims.Role == "giang_vien" {
+	if claims.Role == "giangvien" {
 		reportCreateDto.Status = "pending"
 	}
-	reportCreateDto.Status = "in_progress"
+	reportCreateDto.Status = "resolved"
 
 	if err := c.ShouldBind(&reportCreateDto); err != nil {
 		c.JSON(http.StatusBadRequest, &utils.Response{

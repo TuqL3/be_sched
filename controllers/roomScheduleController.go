@@ -59,10 +59,10 @@ func (r *RoomScheduleController) CreateRoomSchedule(c *gin.Context) {
 		claims.Role = roleStr
 	}
 
-	if claims.Role == "giang_vien" {
+	if claims.Role == "giangvien" {
 		roomScheduleDto.Status = "pending"
 	} else {
-		roomScheduleDto.Status = "approved"
+		roomScheduleDto.Status = "resolve"
 	}
 
 	if err := c.ShouldBindJSON(&roomScheduleDto); err != nil {
