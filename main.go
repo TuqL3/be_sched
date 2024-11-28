@@ -53,6 +53,9 @@ func (h *WSHub) Run() {
 		select {
 		case client := <-h.register:
 			h.mutex.Lock()
+			if existingClient, ok := h.clients[client.userID]; ok {
+				existingClient.conn.Close()
+			}
 			h.clients[client.userID] = client
 			h.mutex.Unlock()
 
@@ -76,8 +79,11 @@ func (h *WSHub) Run() {
 				select {
 				case client.send <- message:
 				default:
-					close(client.send)
+					log.Printf("Send buffer full for user %d, disconnecting", client.userID)
+					client.conn.Close()
+					h.mutex.Lock()
 					delete(h.clients, client.userID)
+					h.mutex.Unlock()
 				}
 			}
 			h.mutex.RUnlock()
@@ -89,16 +95,20 @@ func (c *Client) readPump(hub *WSHub) {
 	defer func() {
 		hub.unregister <- c
 		c.conn.Close()
+		log.Printf("WebSocket closed for user %d", c.userID)
 	}()
 
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
+				log.Printf("Unexpected close for user %d: %v", c.userID, err)
+			} else {
+				log.Printf("Read error for user %d: %v", c.userID, err)
 			}
 			break
 		}
+
 		hub.broadcast <- message
 	}
 }
@@ -133,14 +143,15 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true
+		origin := r.Header.Get("Origin")
+		return origin == "http://localhost:3000"
 	},
 }
 
 func handleWebSocket(c *gin.Context, hub *WSHub, userID uint) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		log.Printf("Failed to upgrade connection: %v", err)
+		log.Printf("Failed to upgrade connection for user %d: %v", userID, err)
 		return
 	}
 
