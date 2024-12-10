@@ -36,8 +36,8 @@ func (r *ScheduleService) DeleteSchedule(roomScheduleId uint) error {
 	return r.scheduleRepo.DeleteSchedule(roomScheduleId)
 }
 
-func (r *ScheduleService) GetAllSchedules(roomId uint, userId uint) ([]*models.Schedule, error) {
-	return r.scheduleRepo.GetAllSchedules(roomId, userId)
+func (r *ScheduleService) GetAllSchedules(roomId uint, userId uint, roles []string) ([]*models.Schedule, error) {
+	return r.scheduleRepo.GetAllSchedules(roomId, userId, roles)
 }
 
 func NewSheduleService(sheduleRepository Repository.RoomScheduleRepositoryInterface) Service.RoomScheduleServiceInterface {

@@ -238,13 +238,33 @@ func (r *RoomScheduleController) GetcountScheduleUser(c *gin.Context) {
 }
 
 func (r *RoomScheduleController) GetAllRoomSchedule(c *gin.Context) {
+
+	user, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found in context"})
+		return
+	}
+
+	claims := user.(jwt.MapClaims)
+
+	rawRoles, ok := claims["roles"].([]interface{})
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to parse roles"})
+		return
+	}
+
+	roles := make([]string, len(rawRoles))
+	for i, role := range rawRoles {
+		roles[i] = role.(string)
+	}
+
 	roomIdStr := c.Query("roomId")
 	userIdStr := c.Query("userId")
 
 	roomId, _ := strconv.ParseUint(roomIdStr, 10, 64)
 	userId, _ := strconv.ParseUint(userIdStr, 10, 64)
 
-	roomSchedule, err := r.roomScheduleService.GetAllSchedules(uint(roomId), uint(userId))
+	roomSchedule, err := r.roomScheduleService.GetAllSchedules(uint(roomId), uint(userId), roles)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, &utils.Response{
 			Status:  http.StatusInternalServerError,

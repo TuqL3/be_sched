@@ -103,17 +103,26 @@ func (r *ScheduleRepository) DeleteSchedule(roomScheduleId uint) error {
 	}
 	return nil
 }
-func (r *ScheduleRepository) GetAllSchedules(roomId uint, userId uint) ([]*models.Schedule, error) {
+
+func containsRole(roles []string, role string) bool {
+	for _, r := range roles {
+		if r == role {
+			return true
+		}
+	}
+	return false
+}
+func (r *ScheduleRepository) GetAllSchedules(roomId uint, userId uint, roles []string) ([]*models.Schedule, error) {
 	var roomSchedules []*models.Schedule
 
-	query := r.DB.Debug().Table("schedule").Preload("User").Preload("Room")
+	query := r.DB.Table("schedule").Preload("User").Preload("Room")
+
+	if !containsRole(roles, "admin") {
+		query = query.Where("user_id = ?", userId)
+	}
 
 	if roomId != 0 {
 		query = query.Where("room_id = ?", roomId)
-	}
-
-	if userId != 0 {
-		query = query.Where("user_id = ?", userId)
 	}
 
 	if err := query.Find(&roomSchedules).Error; err != nil {
