@@ -12,6 +12,8 @@ import (
 	"server/services"
 	"sync"
 
+	"github.com/robfig/cron/v3"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -229,6 +231,14 @@ func main() {
 	routes.PermissionRoute(router, permissionController)
 	routes.ConversationRoute(router, conversationController)
 	routes.MessageRoute(router, messegeController)
+
+	cron := cron.New()
+	cron.AddFunc("@every 1m", func() {
+		repositories.NotifyUsers(config.DB)
+	})
+	cron.Start()
+
+	select {}
 
 	if err := router.Run(":8081"); err != nil {
 		log.Fatal("failed to run app: ", err)
