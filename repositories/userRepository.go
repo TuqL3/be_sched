@@ -2,16 +2,81 @@ package repositories
 
 import (
 	"errors"
-	"gorm.io/gorm"
+	"fmt"
 	"log"
 	"server/dtos/user"
 	"server/interface/Repository"
 	"server/models"
 	"time"
+
+	"github.com/xuri/excelize/v2"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type UserRepository struct {
 	DB *gorm.DB
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+func ReadExcelFile(filePath string) ([][]string, error) {
+	f, err := excelize.OpenFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
+}
+
+func (u *UserRepository) ImportUserFromExcel(file string) error {
+	rows, err := ReadExcelFile(file)
+	if err != nil {
+		return err
+	}
+
+	for i, row := range rows {
+		if i == 0 {
+			continue
+		}
+
+		if len(row) < 10 {
+			return fmt.Errorf("row %d: missing columns", i+1)
+		}
+
+		hashedPassword, err := HashPassword(row[1])
+		if err != nil {
+			return fmt.Errorf("row %d: failed to hash password: %w", i+1, err)
+		}
+
+		user := &models.User{
+			Username:  row[0],
+			Password:  hashedPassword,
+			FullName:  row[2],
+			Email:     row[3],
+			Phone:     row[4],
+			ImageUrl:  row[5],
+			Bio:       row[6],
+			Github:    row[7],
+			Facebook:  row[8],
+			Instagram: row[9],
+		}
+
+		if err := u.DB.Table("user").Create(user); err != nil {
+			return fmt.Errorf("row %d: failed to save user: %w", i+1, err)
+		}
+	}
+
+	return nil
 }
 
 func (u *UserRepository) GetCountUser() (int64, error) {
