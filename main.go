@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"server/config"
 	"server/controllers"
 	"server/repositories"
 	"server/routes"
 	"server/services"
 	"sync"
+	"syscall"
 
 	"github.com/robfig/cron/v3"
 
@@ -232,15 +235,25 @@ func main() {
 	routes.ConversationRoute(router, conversationController)
 	routes.MessageRoute(router, messegeController)
 
-	cron := cron.New()
-	cron.AddFunc("@every 1m", func() {
+	c := cron.New()
+	_, err := c.AddFunc("@every 1m", func() {
 		repositories.NotifyUsers(config.DB)
 	})
-	cron.Start()
+	if err != nil {
+		log.Fatalf("failed to add cron job: %v", err)
+	}
 
-	select {}
+	go c.Start()
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	if err := router.Run(":8081"); err != nil {
 		log.Fatal("failed to run app: ", err)
 	}
+
+	<-sigs
+
+	c.Stop()
+
 }

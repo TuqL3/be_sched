@@ -10,12 +10,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func getSchedulesToNotify(db *gorm.DB) ([]models.Schedule, error) {
+func GetSchedulesWithinThreeHours(db *gorm.DB) ([]models.Schedule, error) {
 	var schedules []models.Schedule
 	now := time.Now()
-	notifyTime := now.Add(2 * time.Hour)
+	twoHoursLater := now.Add(2 * time.Hour)
+	twoHoursOneMinuteLater := twoHoursLater.Add(1 * time.Minute)
 
-	err := db.Where("start_time BETWEEN ? AND ? AND status = ?", now, notifyTime, models.SchedulePending).
+	err := db.Preload("User").
+		Where("start_time BETWEEN ? AND ? AND status = ?", twoHoursLater, twoHoursOneMinuteLater, models.ScheduleResolve).
 		Find(&schedules).Error
 	if err != nil {
 		return nil, err
@@ -25,14 +27,13 @@ func getSchedulesToNotify(db *gorm.DB) ([]models.Schedule, error) {
 }
 
 func NotifyUsers(db *gorm.DB) {
-	schedules, err := getSchedulesToNotify(db)
+	schedules, err := GetSchedulesWithinThreeHours(db)
 	if err != nil {
 		log.Printf("Error fetching schedules: %v", err)
 		return
 	}
 
 	for _, schedule := range schedules {
-		// Lấy thông tin email từ user liên kết
 		userEmail := schedule.User.Email
 
 		subject := fmt.Sprintf("Thông báo: %s sắp bắt đầu", schedule.Title)
@@ -48,7 +49,6 @@ func NotifyUsers(db *gorm.DB) {
 		} else {
 			log.Printf("Email sent successfully to %s", userEmail)
 
-			// Cập nhật trạng thái sau khi thông báo
 			schedule.Status = models.ScheduleResolve
 			db.Save(&schedule)
 		}
