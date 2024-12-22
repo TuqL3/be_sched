@@ -17,5 +17,7 @@ func RoomScheduleRoute(route *gin.Engine, controller *controllers.RoomScheduleCo
 		roomScheduleMiddleware.GET("/countScheduleUser", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewSchedule"}), controller.GetcountScheduleUser)
 		roomScheduleMiddleware.GET("/:scheduleId", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewSchedule"}), controller.GetScheduleById)
 		roomScheduleMiddleware.GET("", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewSchedule"}), controller.GetAllRoomSchedule)
+		roomScheduleMiddleware.POST("/import", controller.ImportScheduleFromExcel)
+
 	}
 }

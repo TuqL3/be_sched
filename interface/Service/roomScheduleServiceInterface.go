@@ -13,5 +13,6 @@ type RoomScheduleServiceInterface interface {
 	GetAllSchedules(roomId uint, userId uint, roles []string) ([]*models.Schedule, error)
 	GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error)
 	GetcountScheduleUser() ([]*utils.ScheduleUserCount, error)
+	ImportScheduleFromExcel(file string) error
 	GetScheduleById(scheduleId uint) (*models.Schedule, error)
 }
