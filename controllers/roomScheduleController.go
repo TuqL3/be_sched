@@ -311,3 +311,26 @@ func (r *RoomScheduleController) GetScheduleById(c *gin.Context) {
 		Error:   "",
 	})
 }
+
+func (r *RoomScheduleController) ImportScheduleFromExcel(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "File upload failed"})
+		return
+	}
+
+	// Save the file temporarily
+	filePath := "./" + file.Filename
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
+	}
+
+	// Call usecase to process the file
+	if err := r.roomScheduleService.ImportScheduleFromExcel(filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Import successful"})
+}

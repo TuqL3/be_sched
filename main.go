@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"server/config"
 	"server/controllers"
 	"server/repositories"
 	"server/routes"
 	"server/services"
 	"sync"
+	"syscall"
+
+	"github.com/robfig/cron/v3"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -230,7 +235,25 @@ func main() {
 	routes.ConversationRoute(router, conversationController)
 	routes.MessageRoute(router, messegeController)
 
+	c := cron.New()
+	_, err := c.AddFunc("@every 1m", func() {
+		repositories.NotifyUsers(config.DB)
+	})
+	if err != nil {
+		log.Fatalf("failed to add cron job: %v", err)
+	}
+
+	go c.Start()
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
 	if err := router.Run(":8081"); err != nil {
 		log.Fatal("failed to run app: ", err)
 	}
+
+	<-sigs
+
+	c.Stop()
+
 }

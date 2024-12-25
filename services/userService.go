@@ -11,6 +11,10 @@ type UserService struct {
 	userRepository Repository.UserRepositoryInterface
 }
 
+func (u *UserService) ImportUserFromExcel(file string) error {
+	return u.userRepository.ImportUserFromExcel(file)
+}
+
 func (u *UserService) GetCountUser() (int64, error) {
 	return u.userRepository.GetCountUser()
 }
