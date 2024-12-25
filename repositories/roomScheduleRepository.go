@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/xuri/excelize/v2"
+	"log"
 	"server/dtos/schedule"
 	"server/interface/Repository"
 	"server/models"
@@ -204,10 +205,13 @@ func (r *ScheduleRepository) GetAllSchedules(roomId uint, userId uint, roles []s
 		query = query.Where("room_id = ?", roomId)
 	}
 
-	if err := query.Find(&roomSchedules).Error; err != nil {
+	err := query.Find(&roomSchedules).Error
+	if err != nil {
+		log.Printf("Error retrieving schedules: %v", err)
 		return nil, err
 	}
 
+	log.Printf("Retrieved %d schedules", len(roomSchedules))
 	return roomSchedules, nil
 }
 
