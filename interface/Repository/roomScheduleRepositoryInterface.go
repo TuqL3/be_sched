@@ -12,6 +12,7 @@ type RoomScheduleRepositoryInterface interface {
 	DeleteSchedule(roomScheduleId uint) error
 	GetAllSchedules(roomId uint, userId uint, roles []string) ([]*models.Schedule, error)
 	GetCountScheduleRoom() ([]*utils.ScheduleRoomCount, error)
+	ImportScheduleFromExcel(file string) error
 	GetcountScheduleUser() ([]*utils.ScheduleUserCount, error)
 	GetScheduleById(scheduleId uint) (*models.Schedule, error)
 }

@@ -13,4 +13,5 @@ type UserRepositoryInterface interface {
 	DeleteUser(userId uint) error
 	GetAllUsers(fullName, role string) ([]*models.User, error)
 	GetCountUser() (int64, error)
+	ImportUserFromExcel(file string) error
 }

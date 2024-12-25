@@ -12,5 +12,6 @@ type UserServiceInterface interface {
 	UpdateUser(userId uint, dto user.UpdateUserDto, imageUrl string) (*models.User, error)
 	DeleteUser(userId uint) error
 	GetAllUsers(fullName, role string) ([]*models.User, error)
+	ImportUserFromExcel(file string) error
 	GetCountUser() (int64, error)
 }

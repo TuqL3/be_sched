@@ -2,10 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
 	"server/dtos/user"
@@ -14,6 +10,11 @@ import (
 	"server/utils"
 	"strconv"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var jwtKey = []byte(os.Getenv("JWT_KEY"))
@@ -326,4 +327,25 @@ func (u *UserController) GetCountUser(c *gin.Context) {
 		Data:    count,
 		Error:   "",
 	})
+}
+
+func (u *UserController) ImportUserFromExcel(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "file is required"})
+		return
+	}
+
+	filePath := "./uploads/" + file.Filename
+	if err := c.SaveUploadedFile(file, filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to save file"})
+		return
+	}
+
+	if err := u.userService.ImportUserFromExcel(filePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Users imported successfully"})
 }

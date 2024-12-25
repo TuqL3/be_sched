@@ -12,6 +12,10 @@ type ScheduleService struct {
 	scheduleRepo Repository.RoomScheduleRepositoryInterface
 }
 
+func (r *ScheduleService) ImportScheduleFromExcel(file string) error {
+	return r.scheduleRepo.ImportScheduleFromExcel(file)
+}
+
 func (r *ScheduleService) GetScheduleById(scheduleId uint) (*models.Schedule, error) {
 	return r.scheduleRepo.GetScheduleById(scheduleId)
 }

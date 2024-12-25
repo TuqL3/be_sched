@@ -23,5 +23,6 @@ func UserRoute(route *gin.Engine, controller *controllers.UserController) {
 		userRouteMiddleware.GET("/profile", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien", "giangvien", "trucban", "giamdoc"}, []string{"viewProfile"}), controller.GetAllUsers)
 		userRouteMiddleware.GET("/:userId", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewUser"}), controller.GetUserById)
 		userRouteMiddleware.GET("", middleware.RolePermissionMiddleware([]string{"admin", "giamdoc", "trucban", "giangvien"}, []string{"viewUser"}), controller.GetAllUsers)
+		userRouteMiddleware.POST("/import", controller.ImportUserFromExcel)
 	}
 }
