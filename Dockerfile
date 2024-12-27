@@ -1,19 +1,15 @@
-FROM golang:1.22.6 AS builder
+FROM golang:1.23 AS builder
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y git && \
+    go install github.com/air-verse/air@latest
+
+COPY go.mod go.sum ./
+RUN go mod tidy
 
 COPY . .
 
-RUN go mod tidy
-
-RUN go build -o main .
-
-FROM alpine:latest
-
-WORKDIR /app
-
-COPY --from=builder /app/main .
-
 EXPOSE 8081
 
-CMD ["./main"]
+CMD ["air"]
