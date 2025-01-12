@@ -29,5 +29,14 @@ services:
     volumes:
       - psql_volume:/var/lib/postgresql/data 
 
+  front-end:
+    build:
+      context: ../client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" 
+    depends_on:
+      - app
+
 volumes:
   psql_volume:

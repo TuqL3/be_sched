@@ -265,9 +265,6 @@ func seedData(db *gorm.DB) {
 			Name: "Table",
 		},
 		{
-			Name: "Air condition",
-		},
-		{
 			Name: "Board",
 		},
 		{
