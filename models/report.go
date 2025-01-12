@@ -1,16 +1,17 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type ReportStatus string
 
 const (
 	ReportPending  ReportStatus = "pending"
-	ReportResolved ReportStatus = "resolved"
-	ReportRejected ReportStatus = "rejected"
+	ReportResolved ReportStatus = "resolve"
+	ReportRejected ReportStatus = "reject"
 )
 
 type Report struct {

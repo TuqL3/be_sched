@@ -3,7 +3,6 @@ package repositories
 import (
 	"errors"
 	"fmt"
-	"github.com/xuri/excelize/v2"
 	"log"
 	"server/dtos/schedule"
 	"server/interface/Repository"
@@ -11,6 +10,8 @@ import (
 	"server/utils"
 	"strconv"
 	"time"
+
+	"github.com/xuri/excelize/v2"
 
 	"gorm.io/gorm"
 )
@@ -197,12 +198,16 @@ func (r *ScheduleRepository) GetAllSchedules(roomId uint, userId uint, roles []s
 
 	query := r.DB.Table("schedule").Preload("User").Preload("Room")
 
-	if !containsRole(roles, "admin") {
-		query = query.Where("user_id = ?", userId)
-	}
-
-	if roomId != 0 {
-		query = query.Where("room_id = ?", roomId)
+	if containsRole(roles, "admin") {
+		if roomId != 0 {
+			query = query.Where("room_id = ?", roomId)
+		}
+	} else {
+		if roomId == 0 {
+			query = query.Where("user_id = ?", userId)
+		} else {
+			query = query.Where("user_id = ? AND room_id = ?", userId, roomId)
+		}
 	}
 
 	err := query.Find(&roomSchedules).Error

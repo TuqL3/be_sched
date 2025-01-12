@@ -1,15 +1,16 @@
 package models
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type RoomStatus string
 
 const (
 	RoomAvailable        RoomStatus = "available"
-	RoomOccupied         RoomStatus = "occupied"
+	RoomBysy             RoomStatus = "busy"
 	RoomUnderMaintenance RoomStatus = "maintenance"
 )
 
