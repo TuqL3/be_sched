@@ -1,8 +1,8 @@
-# Graduate
+# Schedule 
 ## Be PTIT practical laboratory center
 ### 1. Clone
 ```
-    $ git clone https://github.com/TuqL3/Graduate_be.git
+    $ git clone https://github.com/TuqL3/be_sched.git
 ```
 ### 2. Config env
 ```
